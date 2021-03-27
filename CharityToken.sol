@@ -1,9 +1,9 @@
 pragma solidity ^0.5.0;
 
 contract CharityToken {
-    string  public name = "Charity Token";                        // Set the name for display purposes
-    string  public symbol = "CHT";                            // Set the symbol for display purposes
-    uint256 public totalSupply_ = 100000000;                //Update total supply (100000 for example)
+    string  public name = "Charity Token";                        // Sets the name for display purposes
+    string  public symbol = "CHT";                            // Sets the symbol for display purposes
+    uint256 public totalSupply_ = 100000000;                //Updates total supply (100000 for example)
     uint8   public decimals = 18;                              // Amount of decimals for display purposes
 
     event Transfer(
