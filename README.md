@@ -16,7 +16,7 @@ The project will empower people who need help to get funded via a decentralized 
 *The voting token. This token will be used for voting and some other platform activities. The users earn the charity token rewards for using the voting token.
 *The Charity token will be the actual valuable token. That can be used for actual donation and reward active community members.
 
-### Talking points:
+### Talking Points
 * How do we ensure people do not spam the voting system.
 * How do we ensure there is enough incentives to buy the voting tokens beyond just the initial airdrops?
 * Can there be any incentives for NGOs and donors?
