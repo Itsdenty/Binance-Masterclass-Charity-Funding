@@ -18,10 +18,10 @@ class userController {
    * @returns {json} createUser response
    */
   static async createUser(req, res) {
-    const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
+    // const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
     const email = req.body.user.email.trim().toLowerCase();
     req.body.user.email = email;
-    req.body.user.password = hashPassword;
+    // req.body.user.password = hashPassword;
     try {
       const createUser = await processor.createUser(req.body.user);
       res.send(transformer.transformResponse(200, createUser));
@@ -76,22 +76,22 @@ class userController {
    * @memberof userController
    * @returns {*} users
    */
-  static async getUsers(req, res) {
-    try {
-      const page = !req.query.page ? 1 : parseInt(req.query.page, 10),
-        limit = !req.query.limit ? 6 : parseInt(req.query.limit, 10),
-        skip = (page - 1) * limit;
+  // static async getUsers(req, res) {
+  //   try {
+  //     const page = !req.query.page ? 1 : parseInt(req.query.page, 10),
+  //       limit = !req.query.limit ? 6 : parseInt(req.query.limit, 10),
+  //       skip = (page - 1) * limit;
 
-      const query = {
-        limit,
-        skip,
-      };
-      const users = await processor.getUsers(query);
-      res.send(transformer.transformResponse(200, users));
-    } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
-    }
-  }
+  //     const query = {
+  //       limit,
+  //       skip,
+  //     };
+  //     const users = await processor.getUsers(query);
+  //     res.send(transformer.transformResponse(200, users));
+  //   } catch (error) {
+  //     res.status(500).json(transformer.transformResponse(500, error.error));
+  //   }
+  // }
 
   /**
    *
@@ -120,14 +120,14 @@ class userController {
    * @memberof userController
    * @returns {*} roles
    */
-  static async getRoles(req, res) {
-    try {
-      const roles = await processor.getRoles();
-      res.send(transformer.transformResponse(200, roles));
-    } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
-    }
-  }
+  // static async getRoles(req, res) {
+  //   try {
+  //     const roles = await processor.getRoles();
+  //     res.send(transformer.transformResponse(200, roles));
+  //   } catch (error) {
+  //     res.status(500).json(transformer.transformResponse(500, error.error));
+  //   }
+  // }
 
   /**
    *
@@ -138,13 +138,13 @@ class userController {
    * @memberof userController
    * @returns {*} deleted
    */
-  static async deleteUser(req, res) {
-    try {
-      const deleted = await processor.deleteUser(req.params.id);
-      res.send(transformer.transformResponse(200, deleted));
-    } catch (error) {
-      res.status(500).json(transformer.transformResponse(500, error.error));
-    }
-  }
+  // static async deleteUser(req, res) {
+  //   try {
+  //     const deleted = await processor.deleteUser(req.params.id);
+  //     res.send(transformer.transformResponse(200, deleted));
+  //   } catch (error) {
+  //     res.status(500).json(transformer.transformResponse(500, error.error));
+  //   }
+  // }
 }
 export default userController;
