@@ -42,7 +42,7 @@ class userController {
    */
   static async userLogin(req, res) {
     try {
-      const loginUser = await processor.userLogin(req);
+      const loginUser = await processor.userLogin(req.body.user);
       res.send(transformer.transformResponse(200, loginUser));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));

@@ -313,17 +313,6 @@ let formAlert = document.getElementById('form-alert');
 	formAlert.innerHTML = '';
   },
   showErrorAlert = (data) => {
-	//   if(formAlert.classList.contains("alert") && formAlert.classList.contains("alert-success")) {
-	// 	formAlert.classList.remove("alert");
-	//     formAlert.classList.remove('alert-success');
-	// 	formAlert.classList.add("alert");
-	//   	formAlert.classList.add('alert-danger');
-	//   } else {
-	// 	  if(!formAlert.classList.contains("alert")) {
-	// 		formAlert.classList.add("alert");
-	//   		formAlert.classList.add('alert-danger');
-	// 	  }
-	//   }
 	  const alertchild = `<div class="alert alert-danger">
 	  <i class="fas fa-bullhorn"></i> ${data} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">×</span>
@@ -332,18 +321,6 @@ let formAlert = document.getElementById('form-alert');
 	formAlert.innerHTML += alertchild;
   },
   showSuccessAlert = (data) => {
-	// formAlert.innerHTML = '';
-	// if(formAlert.classList.contains("alert") && formAlert.classList.contains("alert-danger")) {
-	// 	formAlert.classList.remove("alert");
-	//     formAlert.classList.remove('alert-danger');
-	// 	formAlert.classList.add("alert");
-	//   	formAlert.classList.add('alert-success');
-	//   } else {
-	// 	  if(!formAlert.classList.contains("alert")) {
-	// 		formAlert.classList.add("alert");
-	//   		formAlert.classList.add('alert-success');
-	// 	  }
-	//   }
 	  const alertchild = `<div class="alert alert-success">
 	  <i class="fas fa-bullhorn"></i> ${data} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">×</span>
@@ -419,7 +396,7 @@ let formAlert = document.getElementById('form-alert');
     console.log(loginDetails);
     fetch(loginRoute, {
       method: 'POST',
-      body: JSON.stringify({ login: loginDetails }),
+      body: JSON.stringify({ user: loginDetails }),
       headers,
     })
       .then(res => Promise.all([res.json(), res]))

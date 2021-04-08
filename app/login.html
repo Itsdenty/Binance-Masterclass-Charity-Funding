@@ -78,19 +78,21 @@ NAVBAR
 	</div>
 	<div class="col-md-6 p-0 bg-white h-100 loginarea">
 		<div class="d-md-flex align-items-center h-100 p-5 justify-content-center">
-			<form class="border rounded p-5">
+			<form class="border rounded p-5" id="loginForm" method="POST">
 				<h3 class="mb-4 text-center">Login to your account</h3>
-				<div class="form-group">
-					<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail" required="">
+				<div id="form-alert" class="" role="alert">
 				</div>
 				<div class="form-group">
-					<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required="">
+					<input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail" required="">
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password" required="">
 				</div>
 				<div class="form-group form-check">
 					<input type="checkbox" class="form-check-input" id="exampleCheck1">
 					<label class="form-check-label small text-muted" for="exampleCheck1">Remember me</label>
 				</div>
-				<button type="submit" class="btn btn-success btn-round btn-block shadow-sm">Sign in</button>
+				<button class="btn btn-success btn-round btn-block shadow-sm" id="submit-login">Sign in</button>
 				<small class="d-block mt-4 text-center"><a class="text-gray" href="#">Forgot your password?</a></small>
 				<small class="d-block mt-4 text-center">Don't have an account?  <a class="text-gray" href="./register.html">Click to sign up</a></small>
 			</form>
@@ -166,6 +168,216 @@ AOS.init({
   }
 });
 </script>
+<script>
+	/* eslint-disable no-undef, no-unused-vars */
+let status = 0,
+  currentModal = '',
+  loaderStatus = 0;
+let errorMessage = document.getElementById('errorMessage');
+let formAlert = document.getElementById('form-alert');
 
+// const errorMessage = document.getElementsByClassName('error'),
+//   signupBtn = document.getElementById('submit-signup'),
+  loginBtn = document.getElementById('submit-login'),
+//   checkUsOutBtn = document.getElementById('check-out'),
+  loginForm = document.getElementById('loginForm'),
+//   signupForm = document.getElementById('signupForm'),
+//   navBar = document.getElementById('check-it'),
+//   toast = document.getElementById('toast'),
+  loginRoute = 'http://localhost:3300/api/v1/user/login',
+//   signupRoute = 'http://localhost:3300/api/v1/user/signup',
+
+  // algorithm function for homepage animated text
+  // algorithm for loader animation
+  loader = (id) => {
+    switch (loaderStatus) {
+      case 0:
+        document.getElementById(id).innerText = 'loading.';
+        loaderStatus = 1;
+        break;
+      case 1:
+        document.getElementById(id).innerText = 'loading..';
+        loaderStatus = 2;
+        break;
+      case 2:
+        document.getElementById(id).innerText = 'loading...';
+        loaderStatus = 3;
+        break;
+      case 3:
+        document.getElementById(id).innerText = 'loading....';
+        loaderStatus = 0;
+        break;
+      default:
+        document.getElementById(id).innerText = 'loading.....';
+        loaderStatus = 0;
+    }
+  },
+
+//   //  function for displaying toaster
+//   showToast = (toastClass, data, redirectUrl) => {
+//     toast.classList.remove('hidden');
+//     toast.classList.add(toastClass);
+//     toast.innerHTML = `<p>${data.substr(0, 50)}</p>`;
+//     const flashError = setTimeout(() => {
+//       toast.classList.add('hidden');
+//       toast.classList.remove(toastClass);
+//       if (redirectUrl) {
+//         window.location.href = redirectUrl;
+//       }
+//     }, 5000);
+//   },
+
+  // function for toggling login and signup modal
+//   toggleModal = (e) => {
+//     const elem = e.target.getAttribute('data-modal');
+//     if (currentModal && currentModal !== elem) {
+//       document.getElementById(currentModal).classList.add('hidden');
+//       document.getElementById(elem).classList.remove('hidden');
+//     } else {
+//       document.getElementById(elem).classList.toggle('hidden');
+//     }
+//     currentModal = elem;
+//   },
+
+  // function for dismissing modal
+//   dismissModal = () => {
+//     if (currentModal) {
+//       document.getElementById(currentModal).classList.add('hidden');
+//       currentModal = null;
+//     }
+//   },
+
+  // check password function for validating password
+  checkPassword = () => {
+    if (signupForm.confirmPassword.value
+      && (signupForm.password.value !== signupForm.confirmPassword.value)) {
+      errorMessage.classList.add('alert');
+	  errorMessage.classList.add('alert-danger');
+      errorMessage.innerHTML = 'password does not match';
+      signupBtn.disabled = true;
+    }
+
+    if (signupForm.confirmPassword.value === signupForm.password.value) {
+      errorMessage.innerHTML = '';
+      errorMessage.classList.remove('alert');
+	  errorMessage.classList.remove('alert-danger');
+      signupBtn.disabled = false;
+    }
+  },
+
+//   checkIt = () => {
+//     const user = JSON.parse(localStorage.getItem('user')),
+//       token = `Bearer ${localStorage.getItem('token')}`;
+//     if (!token || !user) {
+//       navBar.innerHTML = `
+//                           <li class="to-left"><a>SENDIT</a></li> 
+//                           <li class="to-right trigger point-it" data-modal="login">Login</li>
+//                           <li class="to-right trigger point-it" data-modal="signup">Signup</li>
+//                           <li class="to-right">Home</li>
+//                         `;
+//     } else {
+//       navBar.innerHTML = `
+//                           <li class="to-left"><a>SENDIT</a></li> 
+//                           <li class="to-right point-it" id="logout">Logout</li>
+//                           <li class="to-right">Home</li>
+//                         `;
+//     }
+//   },
+
+//   checkState = () => {
+//     const user = JSON.parse(localStorage.getItem('user')),
+//       token = `Bearer ${localStorage.getItem('token')}`;
+//     if (!token || !user) {
+//       showToast('toast-red', 'Please login/signup to access this page');
+//       return;
+//     }
+//     if (user.isadmin) {
+//       window.location.href = 'admin.html';
+//       return;
+//     }
+//     window.location.href = 'parcel.html';
+//   },
+
+  // create account method for signup
+  clearAlert = () => {
+	formAlert.innerHTML = '';
+  },
+  showErrorAlert = (data) => {
+	  const alertchild = `<div class="alert alert-danger">
+	  <i class="fas fa-bullhorn"></i> ${data} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">×</span>
+    </button>
+	</div>`;
+	formAlert.innerHTML += alertchild;
+  },
+  showSuccessAlert = (data) => {
+	  const alertchild = `<div class="alert alert-success">
+	  <i class="fas fa-bullhorn"></i> ${data} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">×</span>
+    </button> 
+	</div>`
+	formAlert.innerHTML += alertchild;
+  }
+
+  // create account method for signup
+  loginUser = (evt) => {
+    evt.preventDefault();
+
+    const headers = new Headers({
+        'content-type': 'application/json',
+      }),
+
+      loginDetails = {
+        email: loginForm.email.value,
+        password: loginForm.password.value,
+      },
+
+      startLoader = setInterval(loader, 500, 'submit-login');
+    console.log(loginDetails);
+    fetch(loginRoute, {
+      method: 'POST',
+      body: JSON.stringify({ user: loginDetails }),
+      headers,
+    })
+      .then(res => Promise.all([res.json(), res]))
+      .then(([data, res]) => {
+        if (!res.ok) {
+          clearInterval(startLoader);
+        //   showToast('toast-red', data.error);
+        //   loginBtn.innerText = 'Login';
+        //   return;
+		  if(res.status === 400) {
+			    console.log(data);
+				const body = data.data.split('|');
+				body.pop();
+				body.forEach(element => {
+					showErrorAlert(element);
+				});
+				return;
+			} else {
+				console.log(data)
+				showErrorAlert(data.error);
+				return;
+			}
+        }
+        loginBtn.innerText = 'Login';
+        // dismissModal();
+        // currentModal = '';
+		showSuccessAlert("sucessfully logged in");
+        // showToast('toast-green', 'login successful', 'parcel.html');
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+      })
+      .catch(error => showErrorAlert(error.message));
+  };
+
+// onload methods for ui animation and signup and login modal events
+window.onload = () => {
+	// checkIt();
+};
+
+// add event listeners
+loginForm.addEventListener('submit', loginUser);
+</script>
 </body>
 </html>

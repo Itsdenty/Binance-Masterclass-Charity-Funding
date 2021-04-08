@@ -78,12 +78,15 @@ class userProcessor {
    * @return{json} the registered user's detail
    */
   static async userLogin(params) {
+    console.log(params);
     try {
       const query = { email: params.email },
-        login = await User.findOne(query)
-          .sort({ created_at: 'descending' });
+        login = await User.findOne(query);
+      if(!login) {
+        throw new Error('wrong email orr password!');
+      }
       if (!bcrypt.compareSync(params.password, login.password)) {
-        throw new Error('wrong password!');
+        throw new Error('wrong email or password!');
       }
       const newUser = {
           _id: { login },
@@ -112,7 +115,8 @@ class userProcessor {
       return response;
     } catch (error) {
       // throw custom 500 error
-      const err = { error: 'an error occured while trying to log you in' };
+      console.log(error.toString());
+      const err = { error: error.toString() };
       throw err;
     }
   }

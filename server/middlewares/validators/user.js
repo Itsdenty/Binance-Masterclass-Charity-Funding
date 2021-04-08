@@ -15,7 +15,7 @@ Validator.create = (req, res, next) => {
 
 Validator.login = (req, res, next) => {
   req.checkBody('user.email', 'invalid email supplied').isEmailV2();
-  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isName();
+  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isPassword();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
