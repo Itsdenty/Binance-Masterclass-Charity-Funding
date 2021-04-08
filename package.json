@@ -1,5 +1,5 @@
 {
-  "name": "movie-mania",
+  "name": "bmcf",
   "version": "1.0.0",
   "description": "Implementation of the movie mania pp",
   "main": "server/app.js",
@@ -16,7 +16,7 @@
     "url": "git+https://github.com/Itsdenty/movie-mania.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "inno",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Itsdenty/movie-mania/issues"
