@@ -8,6 +8,7 @@
     "start:dev": "nodemon --exec babel-node server/app.js",
     "build-server": "babel server --out-dir dist",
     "start": "node dist/app.js",
+    "heroku-prebuild": "npm install webcrypto-shim -g",
     "heroku-postbuild": "npm run build-server"
   },
   "repository": {
