@@ -22,6 +22,16 @@ Validator.login = (req, res, next) => {
       Transformer.transformExpressValidationErrors(errors))));
 };
 
+
+Validator.funding = (req, res, next) => {
+  req.checkBody('user.address', 'invalid email supplied').isEmailV2();
+  req.checkBody('user.description', 'description cannot be empty').notEmpty();
+  req.checkBody('user.target_amount', 'description cannot be empty').notEmpty();
+  req.asyncValidationErrors()
+    .then(next)
+    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+      Transformer.transformExpressValidationErrors(errors))));
+};
 // Validator.update = (req, res, next) => {
 //   req.checkParams('id', 'You supplied and invalid user id').isIdNumber();
 //   req.checkBody('user.username', 'the name supplied is invalid').optional().isName();
