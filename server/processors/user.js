@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import database from '../database/models/index';
 import logger from '../utils/logger';
 import transfer from '../utils/test-token-transfer';
+import charity from '../utils/charity-token-utils';
+
 
 const { Role } = database,
   { User } = database;
@@ -40,6 +42,8 @@ class userProcessor {
           // send vote token
           try {
             const address = await transfer.transfer(user.address);
+            const setup = await transfer.setupVotes(user);
+            // const createVotingProfile
             // return user object
             return {
               message: 'User created successfully and 200 vote token sent as a welcome gift already',
@@ -143,6 +147,53 @@ class userProcessor {
 
   /**
    * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} user - api request
+   * @param{Object} res - route response
+   * @return{json} the registered user's detail
+   */
+   static async createFundingAccount(user, file) {
+    try {
+      if(file.proof) {
+        let ipfsHash = await ipfs.add(file.proof)
+        let hash = ipfsHash[0].hash;
+        user.proof = hash;
+      }
+      user.proof = user.proof || "none";
+      const createFunding = await charity.createFundingAccount(user);
+      // const setup = await transfer.setupVotes(user);
+      console.log(e);
+      return {
+        message: 'Funding account created successfully.',
+      };
+    } catch (error) {
+      // throw custom 500 error
+      console.log(error);
+      const err = { error: 'an error occured while trying to retrieve your records' };
+      throw err;
+    }
+  }
+
+    /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+     static async getFundingAccount(fundingAddress) {
+      try {
+        const query = { _id: userId };
+        const funding = await charity.getFundingAccount(fundingAddress);
+        return {
+          funding
+        };
+      } catch (error) {
+        // throw custom 500 error
+        const err = { error: 'an error occured while trying to fetch the funding account' };
+        throw err;
+      }
+    }
+
+  /**
+   * @description - Creates a new user in the app and assigns a token to them
    * @param{Object} params - user query object
    * @return{json} the registered user's detail
    */
@@ -242,6 +293,10 @@ class userProcessor {
         logger.error("an error occured while trying to reset vote counts");
         throw err;
       }
+    }
+
+    static async createVotersAccount(data) {
+
     }
 }
 export default userProcessor;

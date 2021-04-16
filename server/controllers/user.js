@@ -30,6 +30,52 @@ class userController {
     }
   }
 
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {json} createFundingAccount response
+   */
+   static async createFundingAccount(req, res) {
+    try {
+      const createFunding = await processor.createFundingAccount(req.body.user, req.file);
+      res.send(transformer.transformResponse(200, createFunding));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
+  static async voteAccount(req, res) {
+    const accountAddress = req.params.address;
+    const voteAddress = req.decodedToken.address;
+    const amount = req.params.amount;
+    try {
+      const voteAccount = await processor.voteAccount(voteAddress, accountAddress, amount);
+      res.send(transformer.transformResponse(200, voteAccount));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {*} user
+   */
+   static async getFundingAccount(req, res) {
+    try {
+      const getFunding = await processor.getFundingAccount(req.params.address);
+      res.send(transformer.transformResponse(200, getFunding));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
 
   /**
    *
