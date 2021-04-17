@@ -5,10 +5,14 @@ contract CharityToken {
     string  public name = "Charity Token";                        // Sets the name for display purposes
     string  public symbol = "CHT";                            // Sets the symbol for display purposes
     uint256 public totalSupply_ = 100000000;                //Updates total supply (100000 for example)
+<<<<<<< HEAD
     uint8   public decimals = 18;
     address burnAddress = 0x0000000000000000000000000000000000000000;                         // Amount of decimals for display purposes
     address owner;
     uint8 voteThreshold = 200;
+=======
+    uint8   public decimals = 18;                              // Amount of decimals for display purposes
+>>>>>>> ecfcbe3b0879aa5cab212faef4369d7f5d9607dc
 
     event Transfer(
         address indexed _from,
@@ -142,5 +146,9 @@ contract CharityToken {
         emit Transfer(_from, _to, _value);
         return true;
     }
+<<<<<<< HEAD
 
 }
+=======
+}
+>>>>>>> ecfcbe3b0879aa5cab212faef4369d7f5d9607dc

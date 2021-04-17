@@ -1,7 +1,20 @@
 import moment from 'moment';
-import permissions from '../../config/permission';
+// import permissions from '../../config/permission';
+import web3 from "web3";
+
+// const WAValidator = require('@swyftx/api-crypto-address-validator')
+
+// const valid = WAValidator.validate('1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'litecoin', 'testnet')
+
+// if (valid) {
+//   console.log('This is a valid address')
+// } else {
+//   console.log('Address INVALID')
+// }
 
 const CustomValidators = {};
+
+CustomValidators.isValidAddress = (input) => web3.utils.isAddress(input);
 
 CustomValidators.isGT = (input, num) => num > input;
 
@@ -16,6 +29,8 @@ CustomValidators.isEqual = (input, val) => {
 
   return val === input;
 };
+
+CustomValidators.isPassword = (input) => input && input.length >=6 && input.length <=50;
 
 CustomValidators.isLengthEqual = (input, val) => {
   if (!input) return false;
@@ -86,7 +101,7 @@ CustomValidators.isHumanName = (input) => {
 };
 
 
-CustomValidators.isPermission = input => permissions.includes(input);
+// CustomValidators.isPermission = input => permissions.includes(input);
 
 CustomValidators.isEmailV2 = (email) => {
   const re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;

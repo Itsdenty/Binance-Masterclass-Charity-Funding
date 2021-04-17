@@ -3,12 +3,9 @@ import Transformer from '../../utils/transformer';
 const Validator = {};
 
 Validator.create = (req, res, next) => {
-  req.checkBody('user.username', 'the name supplied is invalid').isName();
+  req.checkBody('user.username', 'the name supplied is invalid').isHumanName();;
   req.checkBody('user.email', 'invalid email supplied').isEmailV2();
-  req.checkBody('user.phone_number', 'The phone number must be equal to 11 digits').isLengthEqual(11);
-  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isName();
-  req.checkBody('user.role', 'invalid role was supplied').isIdNumber();
-  req.checkBody('user.permissions', 'permission must be an array').optional().isPermission();
+  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isPassword();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
@@ -17,40 +14,50 @@ Validator.create = (req, res, next) => {
 
 Validator.login = (req, res, next) => {
   req.checkBody('user.email', 'invalid email supplied').isEmailV2();
-  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isName();
+  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isPassword();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
       Transformer.transformExpressValidationErrors(errors))));
 };
 
-Validator.update = (req, res, next) => {
-  req.checkParams('id', 'You supplied and invalid user id').isIdNumber();
-  req.checkBody('user.username', 'the name supplied is invalid').optional().isName();
-  req.checkBody('user.email', 'invalid email supplied').optional().isEmailV2();
-  req.checkBody('user.phone_number', 'The phone number must be equal to 11 digits').optional().isLengthEqual(11);
-  req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').optional().isName();
-  req.checkBody('user.role', 'invalid role was supplied').optional().isIdNumber();
-  req.checkBody('user.permissions', 'permission must be an array').optional().isPermission();
+
+Validator.funding = (req, res, next) => {
+  req.checkBody('user.address', 'invalid email supplied').isEmailV2();
+  req.checkBody('user.description', 'description cannot be empty').notEmpty();
+  req.checkBody('user.target_amount', 'description cannot be empty').notEmpty();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
       Transformer.transformExpressValidationErrors(errors))));
 };
+// Validator.update = (req, res, next) => {
+//   req.checkParams('id', 'You supplied and invalid user id').isIdNumber();
+//   req.checkBody('user.username', 'the name supplied is invalid').optional().isName();
+//   req.checkBody('user.email', 'invalid email supplied').optional().isEmailV2();
+//   req.checkBody('user.phone_number', 'The phone number must be equal to 11 digits').optional().isLengthEqual(11);
+//   req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').optional().isName();
+//   req.checkBody('user.role', 'invalid role was supplied').optional().isIdNumber();
+//   req.checkBody('user.permissions', 'permission must be an array').optional().isPermission();
+//   req.asyncValidationErrors()
+//     .then(next)
+//     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+//       Transformer.transformExpressValidationErrors(errors))));
+// };
 
 Validator.get = (req, res, next) => {
-  req.checkParams('id', 'You supplied an invalid item id').isIdNumber();
+  req.checkParams('address', 'You supplied an invalid user address').isIdNumber();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
       Transformer.transformExpressValidationErrors(errors), errors)));
 };
 
-Validator.delete = (req, res, next) => {
-  req.checkParams('id', 'You supplied and invalid item id').isIdNumber();
-  req.asyncValidationErrors()
-    .then(next)
-    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
-      Transformer.transformExpressValidationErrors(errors), errors)));
-};
+// Validator.delete = (req, res, next) => {
+//   req.checkParams('id', 'You supplied and invalid item id').isIdNumber();
+//   req.asyncValidationErrors()
+//     .then(next)
+//     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+//       Transformer.transformExpressValidationErrors(errors), errors)));
+// };
 module.exports = Validator;
