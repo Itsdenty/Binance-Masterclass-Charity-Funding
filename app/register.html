@@ -93,9 +93,9 @@ NAVBAR
 				<div class="form-group">
 					<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E-mail" required="" name="email">
 				</div>
-				<div class="form-group">
+				<!-- <div class="form-group">
 					<input type="username" class="form-control" id="exampleInputAddress" aria-describedby="Username" placeholder="Valid bsc wallet address" required="" name="address">
-				</div>
+				</div> -->
 				<div class="form-group">
 					<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required="" name="password">
 				</div>
@@ -200,7 +200,7 @@ let formAlert = document.getElementById('form-alert');
 //   navBar = document.getElementById('check-it'),
 //   toast = document.getElementById('toast'),
 //   loginRoute = 'https://andela-vlf.herokuapp.com/api/v1/auth/login',
-  signupRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/signup',
+  signupRoute = 'http://localhost:3300/api/v1/user/signup',
 
   // algorithm function for homepage animated text
   // algorithm for loader animation
@@ -341,8 +341,8 @@ let formAlert = document.getElementById('form-alert');
 
       userDetails = {
         username: signupForm.username.value,
-		email: signupForm.email.value,
-        address: signupForm.address.value,
+		    email: signupForm.email.value,
+        // address: signupForm.address.value,
         password: signupForm.password.value
       },
 

@@ -293,7 +293,7 @@ let formAlert = document.getElementById('form-alert');
 //     const user = JSON.parse(localStorage.getItem('user')),
 //       token = `Bearer ${localStorage.getItem('token')}`;
 //     if (!token || !user) {
-//       showToast('toast-red', 'Please login/signup to access this page');
+//     //   showToast('toast-red', 'Please login/signup to access this page');
 //       return;
 //     }
 //     if (user.isadmin) {
@@ -372,6 +372,7 @@ let formAlert = document.getElementById('form-alert');
         // showToast('toast-green', 'login successful', 'parcel.html');
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
+		window.location.href = "dashboard.html";
       })
       .catch(error => showErrorAlert(error.message));
   };

@@ -5,7 +5,6 @@ const Validator = {};
 Validator.create = (req, res, next) => {
   req.checkBody('user.username', 'the name supplied is invalid').isHumanName();;
   req.checkBody('user.email', 'invalid email supplied').isEmailV2();
-  req.checkBody('user.address', 'The wallet address must be a valid bep20 wallet address').isValidAddress();
   req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isPassword();
   req.asyncValidationErrors()
     .then(next)

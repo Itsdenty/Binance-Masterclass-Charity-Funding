@@ -14,7 +14,7 @@ let web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
 
 let senderAccount = '0xb8bC5Bda67DDFeca29AB72EBaC0881A4bfE56F36';
 
-let contractAddress = '0xa601E22388C63CE976F00574C5764e516153cf81';
+let contractAddress = '0x7d417d0Bb17bE24000b8c738C17154FC145C97EF';
     
 const abiPath = path.resolve('server', 'utils', 'VoteTokenABI.txt');
 const abi = JSON.parse(fs.readFileSync(abiPath), 'utf8');
@@ -29,8 +29,15 @@ console.log(pvk);
     
 const contract = new web3.eth.Contract(abi, contractAddress);
 
+
 // let receiverAccount = '0xd045B9c78a1B3A822De358A4F75aff9434Fe3a0f';
 // let receiverAccount = '0xec2d8ff499f24ed6e1ae1c695d48842d52b01e55';
+
+const createAddress = () => {
+    const ad = web3.eth.accounts.create(web3.utils.randomHex(32));
+    console.log(ad);
+    return ad;
+}
 
 const transfer = (address) => {
     let receiverAccount = address;
@@ -51,7 +58,7 @@ const transfer = (address) => {
 
 const setupVotes = (data) => {
     return new Promise((resolve, reject) => {
-        contract.methods.setVoteProfile(receiverAccount, vote_allowed, vote_casted).send({
+        contract.methods.setVoteProfile(data.address, data.vote_allowed, data.vote_casted).send({
             from: senderAccount,
             gas: 1000000,         // Gas sent with each transaction 
             gasPrice: 20000000000,  // 20 gwei (in wei) 
@@ -109,7 +116,10 @@ const updateVoteAllowed = (address, value) => {
 
 const tokenFunctions =  {
     transfer,
-    setupVotes
+    setupVotes,
+    createAddress,
+    vote,
+    updateVoteAllowed
 }
 
 export default tokenFunctions;

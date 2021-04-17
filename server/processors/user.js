@@ -24,7 +24,12 @@ class userProcessor {
       // const role = await Role.findOne({ _id: user.role });
       try {
         console.log(user);
+        const account = transfer.createAddress();
+        console.log(account);
+        user.address = account.address;
+        user.pk = account.privateKey;
         const newUser = await User.create(user);
+        delete newUser.pk;
         // newUser.role = role;
         // const newUser = user;
         // create token
@@ -173,15 +178,38 @@ class userProcessor {
     }
   }
 
-    /**
+  /**
    * @description - Creates a new user in the app and assigns a token to them
    * @param{Object} userId - user id to be updated
    * @return{json} the registered user's detail
    */
      static async getFundingAccount(fundingAddress) {
       try {
-        const query = { _id: userId };
         const funding = await charity.getFundingAccount(fundingAddress);
+        return {
+          funding
+        };
+      } catch (error) {
+        // throw custom 500 error
+        const err = { error: 'an error occured while trying to fetch the funding account' };
+        throw err;
+      }
+    }
+  /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+     static async voteAccount(voteAddress, fundingAddress, amount) {
+      try {
+        // const query = { _id: userId };
+        const vote = await transfer.vote(address, value);
+        const updateVote = await transfer.updateVoteAllowed(address, amount);
+        const voteAccount = await charity.voteAccount(fundingAddress, amount, updateVote);
+        if(voteAccount.vote_count >= 200) {
+          const activated = await charity.activateAccount(fundingAddress);
+        }
+        const funding = await charity.getFundingAccount(voteAddress, amount);
         return {
           funding
         };
@@ -295,8 +323,6 @@ class userProcessor {
       }
     }
 
-    static async createVotersAccount(data) {
-
-    }
+    
 }
 export default userProcessor;

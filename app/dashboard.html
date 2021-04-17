@@ -271,6 +271,25 @@ AOS.init({
   }
 });
 </script>
-
+<script>
+	checkState = () => {
+    const user = JSON.parse(localStorage.getItem('user')),
+      token = `Bearer ${localStorage.getItem('token')}`;
+    if (!token || !user) {
+    //   showToast('toast-red', 'Please login/signup to access this page');
+	  window.location.href = "login.html"
+      return;
+    }
+    // if (user.isadmin) {
+    //   window.location.href = 'adm.html';
+    //   return;
+    // }
+    // window.location.href = 'parcel.html';
+  };
+  window.onload = () => {
+	// checkIt();
+	checkState();
+};
+</script>
 </body>
 </html>

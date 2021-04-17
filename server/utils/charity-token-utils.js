@@ -14,7 +14,7 @@ let web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
 
 let senderAccount = '0xb8bC5Bda67DDFeca29AB72EBaC0881A4bfE56F36';
 
-let contractAddress = '0xa601E22388C63CE976F00574C5764e516153cf81';
+let contractAddress = '0xB2eE37e74237cbaFeCff9833132e03EA89F826B8';
     
 const abiPath = path.resolve('server', 'utils', 'CharityTokenAbi.txt');
 const abi = JSON.parse(fs.readFileSync(abiPath), 'utf8');

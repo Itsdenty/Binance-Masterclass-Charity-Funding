@@ -8,6 +8,7 @@ const user = (mongoose, connection) => {
       address: { type: String },
       username: { type: String },
       password: { type: String, required: true },
+      pk: { type: String, required: true },
       blocked: { type: Boolean, default: false },
       last_login: { type: Date },
       vote_allowed: {type: Number, default: 10},
