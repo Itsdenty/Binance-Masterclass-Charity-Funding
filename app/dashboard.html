@@ -41,12 +41,6 @@ NAVBAR
 			<li class="nav-item">
 			<a class="nav-link" href="about.html">About</a>
 			</li>
-			<li class="nav-item">
-			<a class="nav-link" href="campaigns.html">Campaigns</a>
-			</li>
-			<li class="nav-item">
-			<a class="nav-link" href="blog.html">Blog</a>
-			</li>
 		</ul>
 		<ul class="navbar-nav ml-auto d-flex align-items-center">
 			<li class="nav-item">
@@ -73,34 +67,49 @@ NAVBAR
 			<div class="col-lg-9">
 				<h5 class="font-weight-light text-dark"><strong>Purchase charity token</strong></h5>
 			</div>
-			<div class="col-lg-3 text-md-center text-lg-right mt-4 mb-4">
-				<a href="#" class="btn btn-lg btn-outline-dark">Unlock wallet</a>
+			<div class="col-lg-3 text-md-center text-lg-right mt-4 mb-2">
+				<a href="#" ><i class="fas fa-exchange-alt">Swap token</i></a>
+			<form>
+				<div class="form-group">
+    				<input type="amount" placeholder="200 CHT">
+				</div>
+				<div class="form-group">
+    				<input type="amount" placeholder="20 VCT">
+				</div>
+					<button type="submit" class="btn btn-success btn-round">Swap</button>
+				</form>
 			</div>
 		</div>
 	</div>
-</div>
+</div> 
 </div>
     
 <div class="container">
-    <div class="row mb-5 pb-5 pt-5 mt-5">
+    <div class="row mb-2 pb-5 pt-5 mt-2">
 						<!-- token balance -->
-		<div class="col-lg-6  mt-5">
+		<div class="col-lg-6  mt-2">
 			<div class="card shadow-sm border-0">
-    			<div class="card-body pt-4 pb-5">
+    			<div class="card-body pt-3 pb-4">
         			<h5 class="card-title">Vote token balance</h5>
         		<p class="card-text text-muted">
-             		#
+             		200 VCT
         		</p>
     			</div>
-				<div class="card-body pt-5 pb-5">
+				<div class="card-body pt-3 pb-4">
         			<h5 class="card-title">Charity token balance</h5>
         		<p class="card-text text-muted">
-             		#
+             		200 CHT
+        		</p>
+    			</div>
+				<div class="card-body pt-3 pb-4">
+        			<h5 class="card-title">BNB balance</h5>
+        		<p class="card-text text-muted">
+             		20 BNB
         		</p>
     			</div>
 			</div>
 		</div>	
-        <div class="col-lg-6  mt-5">
+        <div class="col-lg-6  mt-2">
                 <!-- <p><b>Simple Card</b></p> -->
             <div class="card shadow-sm border-0">
                    <!-- <img class="card-img-top" src="./assets/img/demo/2.jpg" alt="Card image cap"> -->
@@ -157,7 +166,8 @@ NAVBAR
 	<td> ### </td>
 </tr><div class="col-lg-6  mt-5">
 	<td> ## </td>
-	<td> ###     </td>
+	<td> ### </td>
+	<td>###</td>
 </tr>
 <tr>
 	<th scope="row"> #	</th>
@@ -171,38 +181,6 @@ NAVBAR
 </div>
 </div>
 
-<!--Buy Charity token-->
-<div class="container">
-	<div class="row">
-		<div class="col-lg-6  mt-5">
-			<div class="card shadow-sm border-0">
-				<div class="card-body pt-5 pb-5">
-                       <h5 class="card-title text-md-center">Buy vote token</h5>
-                       <!-- <p class="card-text text-muted">
-                            Some quick example text to build on the card title and make up the bulk of the card's content.
-                       </p> -->
-                       <div class="col-md-10 ml-5">
-                        <form> 
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter amount" required="">
-                            <small id="emailHelp" class="form-text text-muted"></small>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Charity token wallet address" required="">
-                        </div>
-                        <!-- <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div> -->
-                        <button type="submit" class="btn btn-success btn-round d-block w-100">Buy token</button>
-                        </form>
-                        </div>
-                       <!-- <a href="#" class="btn btn-info btn-round">Read More</a> -->
-                   </div>
-				 </div>   
-		</div>
-	</div>	
-</div>
 
 <!--------------------------------------
 FOOTER
