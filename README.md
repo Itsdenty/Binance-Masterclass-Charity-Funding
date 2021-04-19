@@ -1,28 +1,29 @@
 # Binance Masterclass Final Project: Decentralized Charity Funding
 
-### Summary
+## Summary
 
 The project will empower people who need help to get funded via a decentralized platform. The project is proposing a platform that has three major players includimg the community token holder, the needy who create a donation account, and the donors who are majorly Non-governmental Organizations (NGOs) and angelic individuals.
 
-### Major Players and Jusrisdiction
+## Major Players and Jusrisdiction
 
 * The community token holders: Participate in voting funding profiles
 * The Funding account: Opens donation account on the platform
 * The Donors: People that want to donate to a specific profile.
 
-### Decentralization Key Notes
+## Decentralization Key Notes
 
 *The platform will be driven by two unique tokens. 
 *The voting token. This token will be used for voting and some other platform activities. The users earn the charity token rewards for using the voting token.
 *The Charity token will be the actual valuable token. That can be used for actual donation and reward active community members
 
 
-# Binance Master class Charity funding platform
+## Code Details
 
 
 The App is hosted on github pages [ here ](https://charity-funding-bsc.herokuapp.com/).
 
 The charity token contract is available [here](https://testnet.bscscan.com/address/0xB2eE37e74237cbaFeCff9833132e03EA89F826B8).
+
 The Voting token contract is available [here](https://testnet.bscscan.com/address/0x7d417d0Bb17bE24000b8c738C17154FC145C97EF).
 <!-- The endpoints are hosted on heroku [ here ](https://andela-vlf.herokuapp.com/api-docs/). -->
 
@@ -40,6 +41,7 @@ The Voting token contract is available [here](https://testnet.bscscan.com/addres
     * Mongodb for the App database
     * Swagger for documentation
     * IPFS for filestorage
+    * Solidity for smart contract
 
 ## Structure of the backend
     *The server folder holds the backend code
@@ -57,6 +59,10 @@ The Voting token contract is available [here](https://testnet.bscscan.com/addres
     *The tests folder holds the files for integrated tests
     *The utils folder holds helper functions often reused accross the app such as the
     response transformer function.
+    
+## Structure of the Smart Contract
+    * Vote token contract for voting funding accounts
+    * Charity token contract for actual charity and donation
 
 ## Installation.
   * Install [Nodejs](https://nodejs.org/en/download/)
