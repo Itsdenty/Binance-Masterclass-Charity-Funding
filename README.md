@@ -145,6 +145,5 @@ The Voting token contract is available [here](https://testnet.bscscan.com/addres
 <!-- For more details on how to use this API, check the **Documentation** out [ here ](https://andela-vlf.herokuapp.com/api-docs/). -->
 
 ## License and Copyright
-&copy; Abd-afeez Abd-hamid
-
+&copy; Binance Masterclass Project group 7
 Licensed under the [MIT License](LICENSE).
