@@ -22,8 +22,8 @@ The project will empower people who need help to get funded via a decentralized 
 
 The App is hosted on github pages [ here ](https://charity-funding-bsc.herokuapp.com/).
 
-The charity token contract is available [here](https://testnet.bscscan.com/address/0xB2eE37e74237cbaFeCff9833132e03EA89F826B8);
-The Voting token contract is available [here](https://testnet.bscscan.com/address/0x7d417d0Bb17bE24000b8c738C17154FC145C97EF);
+The charity token contract is available [here](https://testnet.bscscan.com/address/0xB2eE37e74237cbaFeCff9833132e03EA89F826B8).
+The Voting token contract is available [here](https://testnet.bscscan.com/address/0x7d417d0Bb17bE24000b8c738C17154FC145C97EF).
 <!-- The endpoints are hosted on heroku [ here ](https://andela-vlf.herokuapp.com/api-docs/). -->
 
 ## Made With
