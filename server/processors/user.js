@@ -4,6 +4,8 @@ import database from '../database/models/index';
 import logger from '../utils/logger';
 import transfer from '../utils/test-token-transfer';
 import charity from '../utils/charity-token-utils';
+import bscUtil from '../utils/bscscan';
+import bscFunctions from '../utils/bscscan';
 
 
 const { Role } = database,
@@ -46,13 +48,13 @@ class userProcessor {
           
           // send vote token
           try {
-            const address = await transfer.transfer(user.address);
+            const address = await transfer.transfer(user.address, 200);
             const setup = await transfer.setupVotes(user);
             // const createVotingProfile
             // return user object
             return {
               message: 'User created successfully and 200 vote token sent as a welcome gift already',
-              user,
+              newUser,
               token,
               refreshToken
             };
@@ -61,7 +63,7 @@ class userProcessor {
             console.log(e);
             return {
               message: 'User created successfully but unable to send token kindly update your address to a valid bsc wallet address',
-              user,
+              newUser,
               token,
               refreshToken
             };
@@ -195,6 +197,47 @@ class userProcessor {
         throw err;
       }
     }
+
+    /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+     static async getUserBalance(fundingAddress) {
+      try {
+        const charityBalance = await charity.getBalance(fundingAddress);
+        const voteBalance = await transfer.getBalance(fundingAddress);
+        const bnbBalance = await bscUtil.getBalance(fundingAddress);
+        return {
+           charityBalance,
+           voteBalance,
+           bnbBalance
+        };
+      } catch (error) {
+        // throw custom 500 error
+        const err = { error: 'an error occured while trying to fetch the user balance' };
+        throw err;
+      }
+    }
+
+        /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+         static async getVoteProfile(user) {
+          try {
+            console.log(user);
+            // const setup = await transfer.setupVotes(user);
+            const voteDetail = await transfer.getVoteProfile(user.address);
+            return voteDetail;
+          } catch (error) {
+            // throw custom 500 error
+            console.log(error);
+            const err = { error: 'an error occured while trying to fetch the user balance' };
+            throw err;
+          }
+        }
   /**
    * @description - Creates a new user in the app and assigns a token to them
    * @param{Object} userId - user id to be updated
@@ -219,6 +262,47 @@ class userProcessor {
         throw err;
       }
     }
+
+  /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} user - api request
+   * @param{Object} res - route response
+   * @return{json} the registered user's detail
+   */
+   static async swapToken(data, usr) {
+    try {
+      console.log("data", data);
+      const query = { email: usr.email };
+      const user = await User.findOne(query);
+      // console.log(user);
+      const {pk, address} = user;
+      if(data.token1 === "BNB" && data.token2 === "CHT" ) {
+        console.log(1);
+        const sendBNB = await charity.sendBNB(user, data.value1);
+        const sendCharity = await charity.transfer(address, data.value2)
+      }
+      else if(data.token1 === "CHT" && data.token2 === "BNB") {
+        console.log(2);
+        const sendCharity = await charity.transferFrom(user, data.value1);
+        const sendBNB = await charity.sellBNB(address, data.value2);
+      }
+      else if (data.token1 === "CHT" && data.token2 === "VCT") {
+        console.log(3);
+        const sendCharity = await charity.transferFrom(user, data.value1);
+        const sendVCT = await transfer.transfer(address, data.value2);
+      }
+      // const createFunding = await charity.createFundingAccount(user);
+      // const setup = await transfer.setupVotes(user);
+      return {
+        message: 'Token swapped successfully.',
+      };
+    } catch (error) {
+      // throw custom 500 error
+      console.log(error);
+      const err = { error: 'an error occured while trying to swap your tokens' };
+      throw err;
+    }
+  }
 
   /**
    * @description - Creates a new user in the app and assigns a token to them

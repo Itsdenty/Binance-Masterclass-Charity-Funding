@@ -77,6 +77,65 @@ class userController {
     }
   }
 
+    /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {*} user
+   */
+     static async getUserBalance(req, res) {
+      try {
+        const getBalance = await processor.getUserBalance(req.decodedToken.address);
+        res.send(transformer.transformResponse(200, getBalance));
+      } catch (error) {
+        res.status(500).json(transformer.transformResponse(500, error.error));
+      }
+    }
+
+    /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {*} user
+   */
+     static async getVoteProfile(req, res) {
+      try {
+        const getVote = await processor.getVoteProfile(req.decodedToken);
+        res.send(transformer.transformResponse(200, getVote));
+      } catch (error) {
+        res.status(500).json(transformer.transformResponse(500, error.error));
+      }
+    }
+
+      /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {json} createUser response
+   */
+  static async swapToken(req, res) {
+    // const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
+    // const email = req.body.user.email.trim().toLowerCase();
+    // req.body.user.email = email;
+    // req.body.user.password = hashPassword;
+    console.log(req.decodedToken);
+    try {
+      const swap = await processor.swapToken(req.body.user, req.decodedToken);
+      res.send(transformer.transformResponse(200, swap));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
+  
   /**
    *
    *

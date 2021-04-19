@@ -23,8 +23,10 @@
   "homepage": "https://github.com/Itsdenty/movie-mania#readme",
   "dependencies": {
     "@babel/runtime": "^7.4.5",
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
+    "bscscan-api": "^1.0.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",

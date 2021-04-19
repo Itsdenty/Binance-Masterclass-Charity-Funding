@@ -45,12 +45,12 @@ NAVBAR
 		<ul class="navbar-nav ml-auto d-flex align-items-center">
 			<li class="nav-item">
 			<span class="col-lg-3 text-md-center text-lg-right mt-4 mb-4">
-				<a href="./donate-form.html" class="btn btn-lg btn-info">Donate</a>
+				<a href="./funding-accounts.html" class="btn btn-lg btn-info">Donate</a>
 			</span>
 			</li>
 			<li class="nav-item">
 			<span class="col-lg-3 text-md-center text-lg-right mt-4 mb-4">
-				<a href="./login.html" class="btn btn-lg btn-info">Sign In</a>
+				<a href="./login.html" class="btn btn-lg btn-info" id="log-out">Log out</a>
 			</span>
 			</li>
 		</ul>
@@ -67,20 +67,52 @@ NAVBAR
 			<div class="col-lg-9">
 				<h5 class="font-weight-light text-dark"><strong>Purchase charity or vote token</strong></h5>
 				<p>Your wallet address is  <code class=" language-markup">
-					<span class="token tag">0x01CD0c15aA91633ef927ad5EF19305588DCd2997</span></code>
+					<span class="token tag" id="w-address"></span></code>
 				Send bnb to your wallet address and swap it for charity or vote token.</p>
 			</div>
-			<div class="col-lg-3 text-md-center text-lg-right mt-4 mb-2">
+			<div class="col-lg-3 text-md-center text-lg-right mt-5 mb-2">
+				<div id="dashboard-alert">
+				</div>
 				<a href="#" ><i class="fas fa-exchange-alt">Swap token</i></a>
-			<form>
-				<div class="form-group">
-    				<input type="amount" placeholder="200 CHT">
+			<!-- <form> -->
+				<!-- <div class="form-group">
+				</div> -->
+				<div class="row mt-4">
+					<div class="col-7">
+						<input type="number" class="form-control" placeholder="value" id="value1" value="1">
+					</div>
+					<div class="col-5">
+						<select class="form-control" id="token1">
+							<option value="CHT">CHT</option>
+							<!-- <option value="VCT">VCT</option> -->
+							<option value="BNB" selected>BNB</option>
+						</select>
+					</div>
 				</div>
-				<div class="form-group">
+				<!-- <div class="form-group">
     				<input type="amount" placeholder="20 VCT">
+					<select>
+						<option>CHT</option>
+						<option>VCT</option>
+						<option>BNB</option>
+					</select>
+				</div> -->
+				<div class="row mt-4">
+					<div class="col-7">
+						<input type="number" class="form-control" placeholder="value" id="value2" value="1000" readonly>
+					</div>
+					<div class="col-5">
+						<select class="form-control" id="token2">
+							<option value="CHT" selected>CHT</option>
+							<!-- <option value="CHT" selcted>CHT</option>
+							<option value="VCT">VCT</option>
+							<option value="BNB">BNB</option> -->
+						</select>
+					</div>
 				</div>
-					<button type="submit" class="btn btn-success btn-round">Swap</button>
-				</form>
+				<br>
+				<button type="button" id="submit-swap" class="btn btn-success btn-round">Swap</button>
+				<!-- </form> -->
 			</div>
 		</div>
 	</div>
@@ -92,9 +124,12 @@ NAVBAR
 						<!-- token balance -->
 		<div class="col-lg-6  mt-2">
 			<div class="card shadow-sm border-0">
-    			<div class="card-body pt-2 pb-1">
-        			<h5 class="card-title">Vote token balance</h5>
-        		<p class="card-text text-muted">
+    			<div class="card-body pt-4 pb-4">
+        			<h5 class="card-title pt-1">Wallet Token balance</h5>
+					<p class="card-text text-muted"></p><b>Charity token balance:</b> <span id="cht-balance"></span></p>
+					<p class="card-text text-muted"></p><b>Vote token balance:</b> <span id="vct-balance"></span></p>
+					<p class="card-text text-muted"></p><b>BNB balance:</b> <span id="bnb-balance"></span></p>
+        		<!-- <p class="card-text text-muted">
              		200 VCT
         		</p>
     			</div>
@@ -108,7 +143,7 @@ NAVBAR
         			<h5 class="card-title">BNB balance</h5>
         		<p class="card-text text-muted">
              		20 BNB
-        		</p>
+        		</p> -->
     			</div>
 			</div>
 		</div>	
@@ -122,8 +157,8 @@ NAVBAR
                             Some quick example text to build on the card title and make up the bulk of the card's content.
                        </p> -->
                        <div class="col-md-10 ml-5">
-						<p><b>Vote Allowance:</b> 10</p>
-                        <p><b>Vote casted:</b> 4</p>
+						<p><b>Vote Allowance:</b> <span id="v-alw"></span></p>
+                        <p><b>Vote casted:</b> <span id="v-cst"></span></p>
                         <!-- <form> 
                         <div class="form-group">
                             <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter amount" required="">
@@ -255,23 +290,239 @@ AOS.init({
 });
 </script>
 <script>
-	checkState = () => {
+	let loaderStatus = 0;
+	let token1 = document.getElementById("token1").value;
+	let value1 = document.getElementById("value1").value;
+	let token2 = document.getElementById("token2").value;
+	let value2 = document.getElementById("value2").value;
+	const checkState = () => {
     const user = JSON.parse(localStorage.getItem('user')),
       token = `Bearer ${localStorage.getItem('token')}`;
-    if (!token || !user) {
-    //   showToast('toast-red', 'Please login/signup to access this page');
-	  window.location.href = "login.html"
-      return;
+		if (!token || !user) {
+		//   showToast('toast-red', 'Please login/signup to access this page');
+		window.location.href = "login.html"
+		return;
+		}
+		console.log(user);
+		document.getElementById("w-address").innerHTML = user.address;
+    },
+	loader = (id) => {
+    switch (loaderStatus) {
+      case 0:
+        document.getElementById(id).innerText = 'loading.';
+        loaderStatus = 1;
+        break;
+      case 1:
+        document.getElementById(id).innerText = 'loading..';
+        loaderStatus = 2;
+        break;
+      case 2:
+        document.getElementById(id).innerText = 'loading...';
+        loaderStatus = 3;
+        break;
+      case 3:
+        document.getElementById(id).innerText = 'loading....';
+        loaderStatus = 0;
+        break;
+      default:
+        document.getElementById(id).innerText = 'loading.....';
+        loaderStatus = 0;
     }
+  },
+	// fetch orders only made by logged in user
+	getUserBalance = () => {
+    const token = `Bearer ${localStorage.getItem('token')}`,
+      user = JSON.parse(localStorage.getItem('user')),
+      balanceRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/balance';
+    if (!token) {
+    //   showToast('toast-red', 'Please login to access this page', 'index.html');
+		window.location.href = "login.html";
+    }
+    // loaderDiv.classList.remove('hidden');
+    fetch(balanceRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+        if (data.status === 401) {
+        //   showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
+		window.location.href = "login.html";
+        } else {
+			console.log(data.data.bnbBalance);
+			// ​document.getElementById("bnb-balance").innerHTML = data.data.bnbBalance;
+			document.getElementById("cht-balance").innerHTML = `${data.data.charityBalance} CHT`;
+			document.getElementById("vct-balance").innerHTML = `${data.data.voteBalance} VCT`;
+			document.getElementById("bnb-balance").innerHTML = `${data.data.bnbBalance} BNB`;
+          // load parcel table
+            return '';
+        }
+      });
+  },
+
+  getVoteProfile = () => {
+    const token = `Bearer ${localStorage.getItem('token')}`,
+      user = JSON.parse(localStorage.getItem('user')),
+	  getVoteRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/vote';
+    if (!token) {
+    //   showToast('toast-red', 'Please login to access this page', 'index.html');
+		window.location.href = "login.html";
+    }
+    // loaderDiv.classList.remove('hidden');
+    fetch(getVoteRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+        if (data.status === 401) {
+        //   showToast('toast-red', 'Session expired redirecting to homepage', 'index.html');
+		window.location.href = "login.html";
+        } else {
+			console.log(data.data);;
+			document.getElementById("v-alw").innerHTML = data.data[0];
+			document.getElementById("v-cst").innerHTML = data.data[1]
+			// document.getElementById("cht-balance").innerHTML = `${data.data.charityBalance} CHT`;
+			// document.getElementById("vct-balance").innerHTML = `${data.data.voteBalance} VCT`;
+			// document.getElementById("bnb-balance").innerHTML = `${data.data.bnbBalance} BNB`;
+          // load parcel table
+            return '';
+        }
+      });
+  },
+  setSuccessNotification = (text) => {
+	const alertchild = `<div class="alert alert-success">
+	   ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">×</span>
+    </button> 
+	</div>`;
+	document.getElementById("dashboard-alert").innerHTML = alertchild;
+	setTimeout(() => {
+		document.getElementById("dashboard-alert").innerHTML = "";
+	}, 5000);
+  },
+  setErrorNotification = (text) => {
+	const alertchild = `<div class="alert alert-danger">
+	  ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">×</span>
+    </button> 
+	</div>`
+	document.getElementById("dashboard-alert").innerHTML = alertchild;
+	setTimeout(() => {
+		document.getElementById("dashboard-alert").innerHTML = "";
+	}, 5000);
+  },
+  setToken1 = (e) => {
+	token1 = document.getElementById("token1").value;
+	if(token1 === "BNB") {
+		document.getElementById("token2").innerHTML = `<option value="CHT" selcted>CHT</option>`;
+	}
+	if(token1 === "CHT") {
+		// document.getElementById("value1") = 1;
+		console.log("value1",value1);
+		document.getElementById("value2").value = value1/1000;
+		document.getElementById("token2").innerHTML = `<option value="BNB" selcted>BNB</option>
+			<option value="VCT" selcted>VCT</option>`;
+	}
+	// if(token1 === "BNB" && token2 === "VCT" ) {
+	// 	setErrorNotification("You cannot swap BNB directly with VCT");
+	// 	document.getElementById("token1").value = 'CHT';
+	// }
+  },
+  setToken2 = (e) => {
+	token2 = document.getElementById("token2").value;
+	if(token2 === "VCT") {
+		document.getElementById("value2").value = value1 * 1000;
+	}
+	// console.log("token one chosen:", token1);
+	// if(token1 === "BNB" && token2 === "VCT" ) {
+	// 	setErrorNotification("You cannot swap BNB directly with VCT");
+	// 	document.getElementById("token1").value = 'CHT';
+	// }
+  }
+  adjustValue1 = (e) => {
+	value1 = document.getElementById("value1").value;
+	if(token1 === "BNB" && token2 === "CHT" ) {
+		// setErrorNotification("You cannot swap BNB directly with VCT");
+		document.getElementById("value2").value = value1 * 1000;
+	}
+	else if(token1 === "CHT" && token2 === "BNB") {
+		document.getElementById("value2").value = value1/1000;
+	} else {
+		document.getElementById("value2").value = value1 * 1000;
+	}
+  },
+  swapToken = (evt) => {
+    evt.preventDefault();
+	const token = `Bearer ${localStorage.getItem('token')}`,
+	swapRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/swap',
+    headers = new Headers({
+        'content-type': 'application/json',
+		authorization: token
+      }),
+
+      loginDetails = {
+        value1,
+        token1,
+		value2,
+		token2,
+      },
+
+      startLoader = setInterval(loader, 500, 'submit-swap');
+    console.log(loginDetails);
+    fetch(swapRoute, {
+      method: 'POST',
+      body: JSON.stringify({ user: loginDetails }),
+      headers,
+    })
+      .then(res => Promise.all([res.json(), res]))
+      .then(([data, res]) => {
+		  console.log(res.status);
+        if (!res.ok) {
+          clearInterval(startLoader);
+			if (res.status === 401) {
+			window.location.href = "login.html";
+			} else {
+				setErrorNotification("unable to swap token");
+			document.getElementById("submit-swap").innerText = 'Swap';
+				return '';
+			}
+        } else {
+			console.log(data);
+			setSuccessNotification("Swapped successfully");
+			getUserBalance();
+			clearInterval(startLoader);
+			document.getElementById("submit-swap").innerText = 'Swap';
+			return '';
+		}
+		// clearInterval(startLoader);
+        // document.getElementById("submit-swap").innerText = 'Swap';
+      })
+      .catch(error => {
+		  console.log(error);
+		setErrorNotification("unable to swap token");
+	  });
+  };
+//   findRate = () => {
+//   }
     // if (user.isadmin) {
     //   window.location.href = 'adm.html';
     //   return;
     // }
     // window.location.href = 'parcel.html';
-  };
   window.onload = () => {
 	// checkIt();
 	checkState();
+	getUserBalance();
+	getVoteProfile();
+	document.getElementById("token1").addEventListener('change', setToken1);
+	document.getElementById("token2").addEventListener('change', setToken2);
+	document.getElementById("value1").addEventListener('change', adjustValue1);
+	document.getElementById("submit-swap").addEventListener('click', swapToken);
 };
 </script>
 </body>

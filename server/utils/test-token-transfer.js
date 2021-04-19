@@ -39,10 +39,10 @@ const createAddress = () => {
     return ad;
 }
 
-const transfer = (address) => {
+const transfer = (address, amount) => {
     let receiverAccount = address;
     return new Promise ((resolve, reject) => {
-        contract.methods.transfer(receiverAccount, "200").send({
+        contract.methods.transfer(receiverAccount, amount).send({
             from: senderAccount,
             gas: 1000000,         // Gas sent with each transaction 
             gasPrice: 20000000000,  // 20 gwei (in wei) 
@@ -105,6 +105,30 @@ const updateVoteAllowed = (address, value) => {
         });;
     }) 
 }
+
+const getBalance = (fundAddress) => {
+    return new Promise((resolve, reject) => {
+        // address fundAddress, uint voteValue, string memory voteHash, bool is_activated
+        contract.methods.balanceOf(fundAddress).call().then(function(result) {
+            resolve(result);
+        })
+        .catch(function(e){
+            reject(e);
+        })
+    })
+}
+
+const getVoteProfile = (fundAddress) => {
+    return new Promise((resolve, reject) => {
+        // address fundAddress, uint voteValue, string memory voteHash, bool is_activated
+        contract.methods.getVoteProfile(fundAddress).call().then(function(result) {
+            resolve(result);
+        })
+        .catch(function(e){
+            reject(e);
+        })
+    })
+}
 // contract.getPastEvents(
 //     'AllEvents',
 //     {
@@ -119,7 +143,9 @@ const tokenFunctions =  {
     setupVotes,
     createAddress,
     vote,
-    updateVoteAllowed
+    updateVoteAllowed,
+    getBalance,
+    getVoteProfile
 }
 
 export default tokenFunctions;

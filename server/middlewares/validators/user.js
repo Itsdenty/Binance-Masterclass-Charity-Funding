@@ -5,6 +5,7 @@ const Validator = {};
 Validator.create = (req, res, next) => {
   req.checkBody('user.username', 'the name supplied is invalid').isHumanName();;
   req.checkBody('user.email', 'invalid email supplied').isEmailV2();
+  // req.checkBody('user.address', 'The wallet address must be a valid bep20 wallet address').isValidAddress();
   req.checkBody('user.password', 'password must be at least 6 digits and less than 50 digits').isPassword();
   req.asyncValidationErrors()
     .then(next)
@@ -51,6 +52,17 @@ Validator.get = (req, res, next) => {
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,
       Transformer.transformExpressValidationErrors(errors), errors)));
+};
+
+Validator.swap = (req, res, next) => {
+  req.checkBody('user.value1', 'value invalid').isNumber();;
+  req.checkBody('user.token1', 'token symbol invalid').isLengthEqual(3);
+  req.checkBody('user.token2', 'value invalid').isLengthEqual(3);
+  req.checkBody('user.value2', 'token symbol invalid').isNumber();
+  req.asyncValidationErrors()
+    .then(next)
+    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+      Transformer.transformExpressValidationErrors(errors))));
 };
 
 // Validator.delete = (req, res, next) => {

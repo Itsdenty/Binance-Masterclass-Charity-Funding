@@ -23,6 +23,10 @@ const pvk = process.env.PRIVATE_KEY;
 
 const address = web3.eth.accounts.wallet.add(pvk);
 
+// web3.eth.getAccounts(function(error, result) {
+//     console.log(address);
+// });
+
 console.log(pvk);
     
 // const abi = contractJSON.abi;
@@ -51,7 +55,6 @@ const createFundingAccount = ({ fundAddress, target_amount, description, proof})
 
 const getFundingAccount = (fundAddress) => {
     return new Promise((resolve, reject) => {
-
         contract.methods.setCharityAccount(fundAddress).send({
             from: senderAccount,
             gas: 1000000,         // Gas sent with each transaction 
@@ -99,6 +102,83 @@ const activateAccount = (fundAddress) => {
         })
     })
 }
+
+const getBalance = (fundAddress) => {
+    return new Promise((resolve, reject) => {
+        // address fundAddress, uint voteValue, string memory voteHash, bool is_activated
+        contract.methods.balanceOf(fundAddress).call().then(function(result) {
+            resolve(result);
+        })
+        .catch(function(e){
+            reject(e);
+        })
+    })
+}
+
+const sendBNB = (fro, val) => {
+    const from = fro;
+    const value = val;
+    return new Promise((resolve, reject) => {
+        web3.eth.accounts.wallet.add(from.pk);
+        web3.eth.sendTransaction({
+            from: from.address,
+            to: senderAccount,
+            value: web3.utils.toWei(value, "ether"),
+            gas: 1000000,         // Gas sent with each transaction 
+            gasPrice: 20000000000,
+        })
+        .then(function (hash) {
+            console.log('hash: ', hash);
+            web3.eth.accounts.wallet.remove(from.pvk);
+            resolve(hash);
+        }).catch(function(error) {
+            console.log("error", error);
+            web3.eth.accounts.wallet.remove(from.pvk);
+            reject(error);
+        }); // If a out of gas error, the second parameter is the receipt.
+    })
+}
+
+
+const transfer = (address, amount) => {
+    let receiverAccount = address;
+    return new Promise ((resolve, reject) => {
+        contract.methods.transfer(receiverAccount, amount).send({
+            from: senderAccount,
+            gas: 1000000,         // Gas sent with each transaction 
+            gasPrice: 20000000000,  // 20 gwei (in wei) 
+        }).then(function (hash) {
+            console.log('hash: ', hash);
+            web3.eth.accounts.wallet.remove(from.pvk);
+            resolve(hash);
+        }).catch(function(error) {
+            console.log("error", error);
+            web3.eth.accounts.wallet.remove(from.pvk);
+            reject(error);
+        });
+    })
+}
+
+const sellBNB = (to, value) => {
+    return new Promise((resolve, reject) => {
+        web3.eth.sendTransaction({
+            from: senderAccount,
+            to,
+            value: web3.utils.toWei(value, "ether"),
+            gas: 1000000,         // Gas sent with each transaction 
+            gasPrice: 20000000000,
+        })
+        .then(function (hash) {
+            console.log('hash: ', hash);
+            web3.eth.accounts.wallet.remove(from.pvk);
+            resolve(hash);
+        }).catch(function(error) {
+            console.log("error", error);
+            web3.eth.accounts.wallet.remove(from.pvk);
+            reject(error);
+        });// If a out of gas error, the second parameter is the receipt.
+    })
+}
 // contract.getPastEvents(
 //     'AllEvents',
 //     {
@@ -107,13 +187,43 @@ const activateAccount = (fundAddress) => {
 //     },
 //     (err, events) => { console.log(events) }
 //   )
-
+const transferFrom = (fro, val) => {
+    const from = fro;
+    const value = val;
+    let receiverAccount = from.address;
+    web3.eth.accounts.wallet.add(from.pk);
+    return new Promise ((resolve, reject) => {
+        // try {
+            console.log(receiverAccount, senderAccount)
+            contract.methods.transfer(senderAccount, value).send({
+                from: receiverAccount,
+                gas: 1000000,         // Gas sent with each transaction 
+                gasPrice: 20000000000,  // 20 gwei (in wei) 
+            }).then(function (hash) {
+                console.log('hash: ', hash);
+                web3.eth.accounts.wallet.remove(from.pvk);
+                resolve(hash);
+            }).catch(function(error) {
+                console.log("error", error);
+                web3.eth.accounts.wallet.remove(from.pvk);
+                reject(error);
+            });
+        // } catch(e) {
+        //     reject(e);
+        // }
+    })
+}
 const tokenFunctions =  {
     createFundingAccount,
     getFundingAccount,
     voteAccount,
     closeAccount,
-    activateAccount
+    activateAccount,
+    getBalance,
+    sendBNB,
+    transfer,
+    sellBNB,
+    transferFrom
 }
 
 export default tokenFunctions;

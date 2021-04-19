@@ -11,5 +11,7 @@ router.post('/login', validator.login, controller.userLogin);
 router.post('/funding',  validator.funding, multer().single('proof'), controller.createFundingAccount);
 router.get('/funding/:address', controller.getFundingAccount);
 router.get('/vote/:address:amount',  auth.verifyToken, controller.voteAccount );
-
+router.get('/balance', auth.verifyToken, controller.getUserBalance);
+router.get('/vote', auth.verifyToken, controller.getVoteProfile);
+router.post('/swap', auth.verifyToken, validator.swap, controller.swapToken);
 export default router;
