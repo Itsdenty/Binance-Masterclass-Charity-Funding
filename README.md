@@ -66,7 +66,7 @@ The Voting token contract is available [here](https://testnet.bscscan.com/addres
 
 ## Installation.
   * Install [Nodejs](https://nodejs.org/en/download/)
-  * Clone this repo ``` git clone https://github.com/itsdenty/andela-vlf-challenge.git ```
+  * Clone this repo ``` git clone https://github.com/Itsdenty/Binance-Masterclass-Charity-Funding.git ```
   * Run ```npm install``` to install the required dependencies
   * Navigate to http://localhost:3300 to lauch the home page
 
