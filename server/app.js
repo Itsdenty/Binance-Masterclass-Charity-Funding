@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 import validator from 'express-validator';
 import path from 'path';
 import routes from './routes/api';
@@ -11,6 +11,7 @@ import shortid from 'short-id';
 import IPFS from 'ipfs-api';
 import customValidator from './middlewares/validators/custom-validators';
 import customSanitizer from './middlewares/validators/custom-sanitizer';
+import formidable from 'express-formidable';
 // import IPFS from 'ipfs-http-client';
 
 // const upload = require('multer');
@@ -36,7 +37,7 @@ app.options('*', cors());
 // app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded()); //Parse URL-encoded bodies
-
+// app.use(formidable());
 // app.use(multer().array());
 
 // configure validator

@@ -24,9 +24,8 @@ Validator.login = (req, res, next) => {
 
 
 Validator.funding = (req, res, next) => {
-  req.checkBody('user.address', 'invalid email supplied').isEmailV2();
-  req.checkBody('user.description', 'description cannot be empty').notEmpty();
-  req.checkBody('user.target_amount', 'description cannot be empty').notEmpty();
+  req.checkBody('description', 'description cannot be empty').notEmpty();
+  req.checkBody('target_amount', 'target_amount must be a number').isNumber();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,

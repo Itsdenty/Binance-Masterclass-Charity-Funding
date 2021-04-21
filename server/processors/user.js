@@ -6,10 +6,15 @@ import transfer from '../utils/test-token-transfer';
 import charity from '../utils/charity-token-utils';
 import bscUtil from '../utils/bscscan';
 import bscFunctions from '../utils/bscscan';
+import IPFS from 'ipfs-api';
 
 
 const { Role } = database,
+  { Funding } = database,
   { User } = database;
+
+const ipfs = IPFS({ host: 'ipfs.infura.io',
+  port: 5001,protocol: 'https' });
 /**
  * @description - Describes the Users of the app, their creation, their editing e.t.c.
  */
@@ -100,11 +105,10 @@ class userProcessor {
         throw new Error('wrong email or password!');
       }
       const newUser = {
-          _id: { login },
+          _id: login._id,
           name: login.username,
-          email: { login },
-          role: { login },
-          phone_number: { login }
+          email: login.email,
+          address: login.address
         },
 
         token = jwt.sign({
@@ -166,9 +170,18 @@ class userProcessor {
         user.proof = hash;
       }
       user.proof = user.proof || "none";
-      const createFunding = await charity.createFundingAccount(user);
-      // const setup = await transfer.setupVotes(user);
-      console.log(e);
+      const fundingAddress = transfer.createAddress();
+      user.address = fundingAddress.address;
+      user.pk = fundingAddress.privateKey;
+      user.user = user.user_id;
+      const payload = {
+        fundAddress: user.address,
+        target_amount: user.target_amount,
+        description: user.description,
+        proof: user.proof
+      };
+      const fundingAccount = await Funding.create(user);
+      const createFunding = await charity.createFundingAccount(payload);
       return {
         message: 'Funding account created successfully.',
       };

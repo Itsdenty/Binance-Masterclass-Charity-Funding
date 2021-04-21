@@ -291,6 +291,7 @@ AOS.init({
 </script>
 <script>
 	let loaderStatus = 0;
+	let logoutBtn = document.getElementById("log-ßout");
 	let token1 = document.getElementById("token1").value;
 	let value1 = document.getElementById("value1").value;
 	let token2 = document.getElementById("token2").value;
@@ -328,6 +329,12 @@ AOS.init({
         document.getElementById(id).innerText = 'loading.....';
         loaderStatus = 0;
     }
+  },
+  logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // showToast('toast-green', 'Logged out successfully', 'index.html');
+	window.location.href= "index.html";
   },
 	// fetch orders only made by logged in user
 	getUserBalance = () => {
@@ -523,6 +530,7 @@ AOS.init({
 	document.getElementById("token2").addEventListener('change', setToken2);
 	document.getElementById("value1").addEventListener('change', adjustValue1);
 	document.getElementById("submit-swap").addEventListener('click', swapToken);
+	logoutBtn.addEventListener('click', logout);
 };
 </script>
 </body>

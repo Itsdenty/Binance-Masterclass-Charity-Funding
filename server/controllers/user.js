@@ -41,7 +41,8 @@ class userController {
    */
    static async createFundingAccount(req, res) {
     try {
-      const createFunding = await processor.createFundingAccount(req.body.user, req.file);
+      req.body.user_id = req.decodedToken._id;
+      const createFunding = await processor.createFundingAccount(req.body, req.files);
       res.send(transformer.transformResponse(200, createFunding));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));
