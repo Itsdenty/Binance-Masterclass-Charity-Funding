@@ -20,7 +20,7 @@ The project will empower people who need help to get funded via a decentralized 
 ## Code Details
 
 
-The App is hosted on github pages [ here ](https://charity-funding-bsc.herokuapp.com/).
+The App is hosted on heroku [ here ](https://charity-funding-bsc.herokuapp.com/).
 
 The charity token contract is available [ here ](https://testnet.bscscan.com/address/0xB2eE37e74237cbaFeCff9833132e03EA89F826B8).
 
@@ -134,15 +134,12 @@ The Voting token contract is available [ here ](https://testnet.bscscan.com/addr
       <td>/api/v1/funding</td>
       <td>To create a funding account</td>
   </tr>
-  <!-- <tr>
-      <td>PATCH</td>
-      <td>/api/v1/parcels/:id/currentlocation</td>
-      <td>Change the current location of a parcel</td>
-  </tr> -->
+  <tr>
+      <td>Get</td>
+      <td>/api/v1/votes</td>
+      <td>To get a user vote history</td>
+  </tr>
 </table>
-
-
-<!-- For more details on how to use this API, check the **Documentation** out [ here ](https://andela-vlf.herokuapp.com/api-docs/). -->
 
 ## License and Copyright
 &copy; Binance Masterclass Project group 7
