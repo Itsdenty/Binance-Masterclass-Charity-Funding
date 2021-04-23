@@ -72,37 +72,42 @@ const setupVotes = (data) => {
     });
 }
 
-const vote = (address, value) => {
+const vote = (from, value) => {
     return new Promise((resolve, reject) => {
         const to = "0x0000000000000000000000000000000000000000";
-        contract.methods.vote(address, to, value).send({
-            from: senderAccount,
+        web3.eth.accounts.wallet.add(from.pk);
+        contract.methods.transfer(to, value).send({
+            from: from.address,
             gas: 1000000,         // Gas sent with each transaction 
             gasPrice: 20000000000,  // 20 gwei (in wei) 
-        }).on('transactionHash', function (hash) {
-            console.log('hash: ', hash);
-            resolve(hash);
-        }).on('error', function(error) {
-            console.log("error", error);
-            reject(error);
-        });;
+        }).then(function(result) {
+            console.log("result1", result.transactionHash)
+            web3.eth.accounts.wallet.remove(from.pk);
+            resolve(result.transactionHash);
+        })
+        .catch(function(e){
+            console.log("update vote error", e)
+            web3.eth.accounts.wallet.remove(from.pk);
+            reject(e);
+        })
     }) 
 }
 
 const updateVoteAllowed = (address, value) => {
     return new Promise((resolve, reject) => {
         const to = "0x0000000000000000000000000000000000000000";
+        console.log(address, value);
         contract.methods.updateVoteAllowed(address, value).send({
             from: senderAccount,
-            gas: 1000000,         // Gas sent with each transaction 
+            gas: 2000000,         // Gas sent with each transaction 
             gasPrice: 20000000000,  // 20 gwei (in wei) 
-        }).on('transactionHash', function (hash) {
-            console.log('hash: ', hash);
-            resolve(hash);
-        }).on('error', function(error) {
-            console.log("error", error);
-            reject(error);
-        });;
+        }).then(function(result) {
+            resolve(result.transactionHash);
+        })
+        .catch(function(e){
+            console.log("update vote error2", e)
+            reject(e);
+        })
     }) 
 }
 

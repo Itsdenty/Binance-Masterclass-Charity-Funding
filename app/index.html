@@ -360,6 +360,24 @@ AOS.init({
   }
 });
 </script>
-
+<script>
+    const checkState = () => {
+        const user = JSON.parse(localStorage.getItem('user')),
+        token = `Bearer ${localStorage.getItem('token')}`;
+		if (!token || !user) {
+		//   showToast('toast-red', 'Please login/signup to access this page');
+		// window.location.href = "login.html"
+		    return;
+		} else {
+            window.location.href = "dashboard.html"
+        }
+		// console.log(user);
+		// document.getElementById("w-address").innerHTML = user.address;
+    };
+    window.onload = () => {
+	    // checkIt();
+	    checkState();
+   }
+</script>
 </body>
 </html>

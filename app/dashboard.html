@@ -194,17 +194,18 @@ NAVBAR
 <tr>
 	<th scope="col"> #      </th>
 	<th scope="col"> Transaction	</th>
-	<th scope="col"> From	</th>
-	<th scope="col"> To	</th>
+	<th scope="col"> count	</th>
+	<th scope="col"> Action	</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody id="vote-history">
+<!-- <tr>
 	<th scope="row"> #	</th>
 	<td> # </td>
 	<td> ## </td>
 	<td> ### </td>
-</tr><div class="col-lg-6  mt-5">
+</tr>
+<div class="col-lg-6  mt-5">
 	<td> ## </td>
 	<td> ### </td>
 	<td>###</td>
@@ -214,7 +215,7 @@ NAVBAR
 	<td> #    </td>
 	<td> ## </td>
 	<td> ### </td>
-</tr>
+</tr> -->
 </tbody>
 </table>
 </div>
@@ -513,6 +514,48 @@ AOS.init({
 		  console.log(error);
 		setErrorNotification("unable to swap token");
 	  });
+  },
+  getUserVotes = () => {
+    const token = `Bearer ${localStorage.getItem('token')}`,
+      user = JSON.parse(localStorage.getItem('user')),
+      userVotesRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/votes';
+    if (!token) {
+    //   showToast('toast-red', 'Please login to access this page', 'index.html');
+		window.location.href = "login.html";
+    }
+    // loaderDiv.classList.remove('hidden');
+    fetch(userVotesRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: token
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+        if (data.status === 401) {
+		window.location.href = "login.html";
+        } else {
+			console.log(data.data.votes.result);
+			const votes = data.data.votes.result;
+			voteHistory = document.getElementById("vote-history");
+			voteHistory.innerHTML = "";
+			votes.forEach((element, index) => {
+				if(element.to === "0x0000000000000000000000000000000000000000") {
+					console.log(element);
+					voteHistory.innerHTML += `
+						<tr>
+							<th scope="row"> ${++index}	</th>
+							<td> ${element.hash.substr(0,10)}... </td>
+							<td> ${element.value}</td>
+							<td> <a href="https://testnet.bscscan.com/tx/${element.hash}" target="_blank"><button type="button" class="btn btn-info">Detail</button></a> </td>
+						</tr>
+					`;
+				}
+			});
+          // load parcel table
+            return '';
+        }
+      });
   };
 //   findRate = () => {
 //   }
@@ -526,11 +569,12 @@ AOS.init({
 	checkState();
 	getUserBalance();
 	getVoteProfile();
+	getUserVotes();
 	document.getElementById("token1").addEventListener('change', setToken1);
 	document.getElementById("token2").addEventListener('change', setToken2);
 	document.getElementById("value1").addEventListener('change', adjustValue1);
 	document.getElementById("submit-swap").addEventListener('click', swapToken);
-	logoutBtn.addEventListener('click', logout);
+	// logoutBtn.addEventListener('click', logout);
 };
 </script>
 </body>

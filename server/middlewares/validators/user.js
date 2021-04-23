@@ -24,7 +24,7 @@ Validator.login = (req, res, next) => {
 
 
 Validator.funding = (req, res, next) => {
-  req.checkBody('description', 'description cannot be empty').notEmpty();
+  req.checkBody('description', 'description cannot be empty').isMinLen(100);
   req.checkBody('target_amount', 'target_amount must be a number').isNumber();
   req.asyncValidationErrors()
     .then(next)

@@ -66,41 +66,10 @@ NAVBAR
 <!-- End Navbar -->
     
     <div class="container">
-        <!-- <div class="row mb-5 pb-5 pt-5 mt-5">
-            <div class="col-lg-6  mt-5">
-               <div class="card shadow-sm border-0">
-                   <div class="card-body pt-5 pb-5">
-                       <h5 class="card-title text-md-center">Buy vote token</h5>
-                       <div class="col-md-10 ml-5">
-                        <form> 
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter amount" required="">
-                            <small id="emailHelp" class="form-text text-muted">send charity token to vote contract address to buy token</small>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Charity token wallet address" required="">
-                        </div>
-                        <button type="submit" class="btn btn-success btn-round d-block w-100">Buy token</button>
-                        </form>
-                        </div>
-                   </div>
-               </div>
-           </div>
-        </div> -->
-        <div class="card-deck card-pricing text-center pt-5">
+        <div class="card-deck card-pricing text-center pt-5" id="funding-list">
             <!-- <div class="row mt-5"> -->
-            <div class="card border-0 shadow-sm  mt-5">
-                <!-- <div class="card-header bg-info border-0 pt-4 pb-4">
-                    <h3 class="my-0 font-weight-normal mb-3">Personal</h3>
-                    <h4 class="card-title pricing-card-title">$11 <small class="text-muted">/ mo</small></h4>
-                </div> -->
+            <!-- <div class="card border-0 shadow-sm  mt-5">
                 <div class="card-body">
-                    <!-- <ul class="list-unstyled mt-3 mb-4">
-                        <li>10 users included</li>
-                        <li>2 GB of storage</li>
-                        <li>Email support</li>
-                        <li>Help center access</li>
-                    </ul> -->
                     <h3>Account detail</h3>
                     <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian... <br/><a href="#">Read more</a></p>
                     <a href="test.html">account file</a>
@@ -117,12 +86,8 @@ NAVBAR
                     <br/>
                     <button type="button" class="btn btn-info mt-4">Fund</button>
                 </div>
-            </div>
-            <div class="card shadow-sm border-0  mt-5">
-                <!-- <div class="card-header bg-primary border-0 pt-4 pb-4">
-                    <h3 class="my-0 font-weight-normal text-white mb-3">Premium</h3>
-                    <h4 class="card-title pricing-card-title text-white">$15 <small>/ mo</small></h4>
-                </div> -->
+            </div> -->
+            <!-- <div class="card shadow-sm border-0  mt-5">
                 <div class="card-body">
                     <h3>Account detail</h3>
                     <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian... <br/> <a href="#">Read more</a></p>
@@ -140,12 +105,8 @@ NAVBAR
                     <br/>
                     <button type="button" class="btn btn-info mt-4">Fund</button>
                 </div>
-            </div>
-            <div class="card border-0 shadow-sm  mt-5">
-                <!-- <div class="card-header bg-info border-0 pt-4 pb-4">
-                    <h3 class="my-0 font-weight-normal mb-3">Enterprise</h3>
-                    <h4 class="card-title pricing-card-title">$29 <small class="text-muted">/ mo</small></h4>
-                </div> -->
+            </div> -->
+            <!-- <div class="card border-0 shadow-sm  mt-5">
                 <div class="card-body">
                     <h3>Account detail</h3>
                     <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian... <br/> <a href="#">Read more</a></p>
@@ -163,7 +124,7 @@ NAVBAR
                     <br/>
                     <button type="button" class="btn btn-info mt-4">Fund</button>
                 </div>
-            </div>
+            </div> -->
             <!-- </div> -->
 
         </div>
@@ -251,11 +212,6 @@ JAVASCRIPTS
         }
     </style>
 </noscript>
-<script>
-    AOS.init({
-        duration: 700
-    });
-</script>
  
 <!-- Disable animation on less than 1200px, change value if you like -->
 <script>
@@ -265,7 +221,52 @@ AOS.init({
     return window.innerWidth < maxWidth;
   }
 });
-</script>
 
+</script>
+<script>
+    const getFundings = () => {
+	  getFundsRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/funding';
+    fetch(getFundsRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+		console.log(data.data.funding);
+        const fundingList = document.getElementById("funding-list");
+        fundingList.innerHTML = "";
+        data.data.funding.forEach(element => {
+            fundingList.innerHTML += `
+            <div class="card border-0 shadow-sm  mt-5">
+                <div class="card-body">
+                    <h3>Account detail</h3>
+                    <p>${element.description.substr(0,100)} <br/><a href="account-detail.html?id=${element._id}">Read more</a></p>
+                    <a href="https://charity-funding-bsc.herokuapp.com/proof/${element.proof}" target="_blank">account proof</a>
+                    <div class="row mt-4">
+                        <div class="col-1">
+                        </div>
+                        <div class="col-5">
+                            <input type="number" class="form-control" placeholder="Vote count">
+                        </div>
+                        <div class="col-5">
+                            <button type="submit" class="btn btn-primary btn-round">Vote</button>
+                        </div>
+                    </div>
+                    <br/>
+                    <button type="button" class="btn btn-info mt-4">Fund</button>
+                </div>
+            </div>
+            `
+        });
+		// document.getElementById("v-alw").innerHTML = data.data[0];
+        return '';
+      });
+  };
+  window.onload = () => {
+	// checkIt();
+	getFundings();
+};
+</script>
 </body>
 </html>

@@ -93,9 +93,9 @@ app.post('/upload', multer().single('buffer'), async (req,res)=>{
   }
 })
 
-app.get('/upload/:hash', async (req,res) => {
+app.get('/proof/:hash', async (req,res) => {
   const hash = req.params.hash;
-  // console.log(hash);
+  console.log(hash);
   // let data = await ipfs.get(hash)
   let data = await ipfs.files.get(hash);
 

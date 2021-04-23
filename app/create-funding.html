@@ -100,7 +100,7 @@ NAVBAR
 					<input type="checkbox" class="form-check-input" id="exampleCheck1">
 					<label class="form-check-label small text-muted" for="exampleCheck1">Remember me</label>
 				</div>
-				<button class="btn btn-success btn-round btn-block shadow-sm" id="submit-login">Create Funding account</button>
+				<button class="btn btn-success btn-round btn-block shadow-sm" id="submit-funding">Create Funding account</button>
 				<!-- <small class="d-block mt-4 text-center"><a class="text-gray" href="#">Forgot your password?</a></small>
 				<small class="d-block mt-4 text-center">Don't have an account?  <a class="text-gray" href="./register.html">Click to sign up</a></small> -->
 			</form>
@@ -177,154 +177,52 @@ AOS.init({
 });
 </script>
 <script>
-	/* eslint-disable no-undef, no-unused-vars */
-let status = 0,
-  currentModal = '',
-  loaderStatus = 0;
-let errorMessage = document.getElementById('errorMessage');
-let formAlert = document.getElementById('form-alert');
-  submitAccount = document.getElementById('submit-account'),
-  createAccountForm = document.getElementById('createAccountForm'),
-  createFundingRoute = 'http://localhost:3300/api/v1/user/funding',
-  loader = (id) => {
-    switch (loaderStatus) {
-      case 0:
-        document.getElementById(id).innerText = 'loading.';
-        loaderStatus = 1;
-        break;
-      case 1:
-        document.getElementById(id).innerText = 'loading..';
-        loaderStatus = 2;
-        break;
-      case 2:
-        document.getElementById(id).innerText = 'loading...';
-        loaderStatus = 3;
-        break;
-      case 3:
-        document.getElementById(id).innerText = 'loading....';
-        loaderStatus = 0;
-        break;
-      default:
-        document.getElementById(id).innerText = 'loading.....';
-        loaderStatus = 0;
-    }
-  },
-
-  checkState = () => {
-    const user = JSON.parse(localStorage.getItem('user')),
-      token = `Bearer ${localStorage.getItem('token')}`;
-    if (!token || !user) {
-      showToast('toast-red', 'Please login/signup to access this page');
-      return;
-    }
-    if (user.isadmin) {
-      window.location.href = 'admin.html';
-      return;
-    }
-    window.location.href = 'parcel.html';
-  },
-
-  // create account method for signup
-  clearAlert = () => {
-	formAlert.innerHTML = '';
-  },
-  showErrorAlert = (data) => {
-	  const alertchild = `<div class="alert alert-danger">
-	  <i class="fas fa-bullhorn"></i> ${data} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">×</span>
-    </button>
-	</div>`;
-	formAlert.innerHTML += alertchild;
-  },
-  showSuccessAlert = (data) => {
-	  const alertchild = `<div class="alert alert-success">
-	  <i class="fas fa-bullhorn"></i> ${data} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">×</span>
-    </button> 
-	</div>`
-	formAlert.innerHTML += alertchild;
-  }
-
-  // create account method for signup
-  createFundAccount = (evt) => {
-    evt.preventDefault();
-	let token = `Bearer ${localStorage.getItem('token')}`;
-    const headers = new Headers({
-        'content-type': 'application/json',
-      }),
-
-    //   loginDetails = {
-    //     description: createAccountForm.description.value,
-    //     target_amount: createAccountForm.target_amount.value,
-	// 	proof: createAccountForm.proof.value
-    //   },
-
-    startLoader = setInterval(loader, 500, 'submit-login');
-    // console.log(loginDetails);
-	const formData = new FormData();
-	const fileField = document.querySelector('input[type="file"]');
-
-	formData.append('description', createAccountForm.description.value);
-	formData.append('target_amount', createAccountForm.target_amount.value);
-	formData.append('token', token);
-	formData.append('proof', createAccountForm.proof.files[0]);
-
-	fetch(createFundingRoute, {
-		method: 'POST',
-		body: formData
-	})
-	.then((response) => response.json())
-	.then((result) => {
-		console.log('Success:', result);
-	})
-	.catch((error) => {
-		console.error('Error:', error);
-	});
-};
-//     fetch(createFundingRoute, {
-//       method: 'POST',
-//       body: JSON.stringify({ user: loginDetails }),
-//       headers,
-//     })
-//       .then(res => Promise.all([res.json(), res]))
-//       .then(([data, res]) => {
-//         if (!res.ok) {
-//           clearInterval(startLoader);
-//         //   showToast('toast-red', data.error);
-//         //   loginBtn.innerText = 'Login';
-//         //   return;
-// 		  if(res.status === 400) {
-// 			    console.log(data);
-// 				const body = data.data.split('|');
-// 				body.pop();
-// 				body.forEach(element => {
-// 					showErrorAlert(element);
-// 				});
-// 				return;
-// 			} else {
-// 				console.log(data)
-// 				showErrorAlert(data.error);
-// 				return;
-// 			}
-//         }
-//         loginBtn.innerText = 'Login';
-//         // dismissModal();
-//         // currentModal = '';
-// 		showSuccessAlert("sucessfully logged in");
-//         // showToast('toast-green', 'login successful', 'parcel.html');
-//         localStorage.setItem('token', data.data.token);
-//         localStorage.setItem('user', JSON.stringify(data.data.user));
-//       })
-//       .catch(error => showErrorAlert(error.message));
-//   };
-
-// onload methods for ui animation and signup and login modal events
-window.onload = () => {
+	const params = new URL(document.location)).searchParams;
+    let id = params.get("name");
+	console.log(id);
+    const getFundings = () => {
+	  getFundRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/funding/id';
+    fetch(getVoteRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+		console.log(data.data.funding);
+        const fundingList = document.getElementById("funding-list");
+        fundingList.innerHTML = "";
+        data.data.funding.forEach(element => {
+            fundingList.innerHTML += `
+            <div class="card border-0 shadow-sm  mt-5">
+                <div class="card-body">
+                    <h3>Account detail</h3>
+                    <p>${element.description.substr(0,100)} <br/><a href="account-detail.html?id=${element._id}">Read more</a></p>
+                    <a href="https://charity-funding-bsc.herokuapp.com/proof/${element.proof}" target="_blank">account proof</a>
+                    <div class="row mt-4">
+                        <div class="col-1">
+                        </div>
+                        <div class="col-5">
+                            <input type="number" class="form-control" placeholder="Vote count">
+                        </div>
+                        <div class="col-5">
+                            <button type="submit" class="btn btn-primary btn-round">Vote</button>
+                        </div>
+                    </div>
+                    <br/>
+                    <button type="button" class="btn btn-info mt-4">Fund</button>
+                </div>
+            </div>
+            `
+        });
+		// document.getElementById("v-alw").innerHTML = data.data[0];
+        return '';
+      });
+  };
+  window.onload = () => {
 	// checkIt();
+	// getFundings();
 };
-
-// add event listeners
-createAccountForm.addEventListener('submit', createFundAccount);
 </script>
 </body>
 </html>

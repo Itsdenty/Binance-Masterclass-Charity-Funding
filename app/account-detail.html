@@ -73,25 +73,27 @@ NAVBAR
                    <!-- <img class="card-img-top" src="./assets/img/demo/2.jpg" alt="Card image cap"> -->
                    <div class="card-body pt-5 pb-5">
                        <h3 class="card-title text-md-center">Account Details</h3>
+                       <div id="dashboard-alert">
+                       </div>
                        <!-- <p class="card-text text-muted">
                             Some quick example text to build on the card title and make up the bulk of the card's content.
                        </p> -->
-                       <div class="col-md-11 ml-5">
-                        <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian.</p>
-                        <p><b>Status:</b> Inactive</p>
-                        <p><b>Vote Count:</b> 15</p>
-                        <p><b>Activation Votes:</b> 200</p>
-                        <p><b>Target fund:</b> 400 CTK</p>
-                        <p><b>Current Fund:</b> 0 CTK</p>
-                        <a href="test.html">account file</a>
+                       <div class="col-md-11 ml-5" id="funding-div">
+                        <p id="description"></p>
+                        <p><b>Status:</b> <span id="status"></span></p>
+                        <p><b>Vote Count:</b> <span id="vote_count"></span></p>
+                        <p><b>Activation Votes:</b> <span id="activation_vote"></span></p>
+                        <p><b>Target fund:</b> <span id="target_amount"></span></p>
+                        <p><b>Current Fund:</b> <span id="current_amount"></span></p>
+                        <a href="" id="proof_link" target="_blank">proof file</a>
                         <div class="row mt-4">
                             <!-- <div class="col-1">
                             </div> -->
                             <div class="col-5">
-                                <input type="number" class="form-control" placeholder="Vote count">
+                                <input type="number" class="form-control" placeholder="Vote count" id="vote_amount" value=1>
                             </div>
                             <div class="col-5">
-                                <button type="submit" class="btn btn-primary btn-round">Vote</button>
+                                <button type="submit" class="btn btn-primary btn-round" id="submit-vote">Vote</button>
                             </div>
                         </div>
                         <br/>
@@ -108,7 +110,7 @@ NAVBAR
                    <div class="card-body pt-5 pb-5">
                        <h3 class="card-title text-md-center">Funding history</h3>
                        <div class="alert alert-warning shadow-lg" role="alert">
-                        No funding yet for this attack.
+                        No funding yet for this account.
                     </div>
                    </div>
                </div>
@@ -122,16 +124,16 @@ NAVBAR
                     <div class="col-12">
                         <!-- table -->
                         <table class="table">
-                            <thead class="thead-dark">
+                            <thead class="thead-dark" id="table-head">
                             <tr>
                                 <th scope="col"> #      </th>
                                 <th scope="col"> Transaction hash	</th>
-                                <th scope="col"> voted	</th>
+                                <!-- <th scope="col"> voted	</th> -->
                                 <th scope="col"> Action	</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
+                            <tbody id="voting-history">
+                            <!-- <tr>
                                 <th scope="row"> 1	</th>
                                 <td> xxxxxxxxxxxxxxxxx </td>
                                 <td> 3 </td>
@@ -160,7 +162,7 @@ NAVBAR
                                 <td> xxxxxxxxxxxxxxxxx </td>
                                 <td> 3 </td>
                                 <td> <button type="button" class="btn btn-info">Detail</button> </td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
 
@@ -271,6 +273,135 @@ AOS.init({
   }
 });
 </script>
+<script>
+    let params = (new URL(document.location)).searchParams;
+    let id = params.get("id");
+    let fundData;
+    console.log(id);
+    const   setSuccessNotification = (text) => {
+	const alertchild = `<div class="alert alert-success">
+	   ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">×</span>
+    </button> 
+	</div>`;
+	document.getElementById("dashboard-alert").innerHTML = alertchild;
+	setTimeout(() => {
+		document.getElementById("dashboard-alert").innerHTML = "";
+        }, 5000);
+    },
+    setErrorNotification = (text) => {
+        const alertchild = `<div class="alert alert-danger">
+        ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button> 
+        </div>`
+        document.getElementById("dashboard-alert").innerHTML = alertchild;
+        setTimeout(() => {
+            document.getElementById("dashboard-alert").innerHTML = "";
+        }, 5000);
+    },
+    getFunding = () => {
+	  getFundsRoute = `https://charity-funding-bsc.herokuapp.com/api/v1/user/funding/${id}`;
+    fetch(getFundsRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+		console.log(data.data.funding);
+        const funding = data.data.funding;
+        fundData = data.data.funding;
+        const fundingDiv = document.getElementById("funding-div");
+        document.getElementById('description').innerText = funding.description;
+        document.getElementById("status").innerText = funding.is_active ? "active" : "inactive";
+        document.getElementById("vote_count").innerText = funding.vote_count;
+        document.getElementById("activation_vote").innerText = 200;
+        document.getElementById("target_amount").innerText = `${funding.target_amount} CHT`;
+        document.getElementById("current_amount").innerText = `${funding.raised_amount} CHT`;
+        document.getElementById("proof_link").href = `https://charity-funding-bsc.herokuapp.com0/proof/${funding.proof}`;
+        const votehistory = document.getElementById("voting-history");
+        // votehistory.innerHTML = `
+        //                 <thead class="thead-dark">
+        //                     <tr>
+        //                         <th scope="col"> #      </th>
+        //                         <th scope="col"> Transaction hash	</th>
+        //                         <!-- <th scope="col"> voted	</th> -->
+        //                         <th scope="col"> Action	</th>
+        //                     </tr>
+        //                 </thead>`;
+        funding.votes.forEach((element, index) => {
+            votehistory.innerHTML += `
+            <tr>
+                <th scope="row"> ${++index}	</th>
+                <td>${element.substr(0,10)}...</td>
+                <td> <a href="https://testnet.bscscan.com/tx/${element}" target="_blank"><button type="button" class="btn btn-info">Detail</button></a> </td>
+            </tr>    
+            `;
+        })
+        // fundingList.innerHTML = "";
+		// document.getElementById("v-alw").innerHTML = data.data[0];
+        return '';
+      });
+  },
+  voteAccount = (e) => {
+    const token = `Bearer ${localStorage.getItem('token')}`,
+    headers = new Headers({
+        'content-type': 'application/json',
+		authorization: token
+      }),
+    amount = document.getElementById("vote_amount").value,
+	voteAccountRoute = `https://charity-funding-bsc.herokuapp.com/api/v1/user/vote/${fundData.address}/${amount}`;
+    if(!token) {
+        window.location.href = "login.html";
+    }
+    if(amount > 0 && amount <= 10) {
+      fetch(voteAccountRoute, {
+        headers,
+        })
+      .then(res => res.json())
+      .then((data, res) => {
+          console.log(data.status);
+        if (data.status == 0) {
+			window.location.href = "login.html";
+		} else {
+            console.log(data.data.funding);
+            const vote_status = data.data.message;
+            setSuccessNotification(vote_status || "vote casted successfully");
+            return '';
+        }
+      });
+    } else {
+        setErrorNotification("invalid vote casted")
+    }
+  },
+    getVotings = () => {
+	  getVotesRoute = `https://charity-funding-bsc.herokuapp.com/api/v1/user/votes/${id}`;
+    fetch(getVotesRoute, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then((data, res) => {
+		console.log(data.data.funding);
+        // const fundingList = document.getElementById("funding-list");
+        // fundingList.innerHTML = "";
+        // data.data.funding.forEach(element => {
+        //     fundingList.innerHTML += `
 
+        //     `
+        // });
+		// document.getElementById("v-alw").innerHTML = data.data[0];
+        return '';
+      });
+    };
+  window.onload = () => {
+	// checkIt();
+	getFunding();
+    // getVotings();
+    document.getElementById("submit-vote").addEventListener('click', voteAccount)
+  };
+</script>
 </body>
 </html>

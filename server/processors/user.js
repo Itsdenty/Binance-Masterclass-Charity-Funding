@@ -7,6 +7,8 @@ import charity from '../utils/charity-token-utils';
 import bscUtil from '../utils/bscscan';
 import bscFunctions from '../utils/bscscan';
 import IPFS from 'ipfs-api';
+import funding from '../database/models/funding';
+import fs from 'fs';
 
 
 const { Role } = database,
@@ -15,6 +17,8 @@ const { Role } = database,
 
 const ipfs = IPFS({ host: 'ipfs.infura.io',
   port: 5001,protocol: 'https' });
+const voteContractAddress = '0x7d417d0Bb17bE24000b8c738C17154FC145C97EF';
+
 /**
  * @description - Describes the Users of the app, their creation, their editing e.t.c.
  */
@@ -162,13 +166,21 @@ class userProcessor {
    * @param{Object} res - route response
    * @return{json} the registered user's detail
    */
-   static async createFundingAccount(user, file) {
+   static async createFundingAccount(req) {
     try {
-      if(file.proof) {
-        let ipfsHash = await ipfs.add(file.proof)
+      const user = req.body;
+      if(req.file) {
+        // var tmp_path = req.file.path;
+        // // set where the file should actually exists - in this case it is in the "images" directory
+        // var target_path = 'server/public/uploads/' + req.file.originalname;
+        // // move the file from the temporary location to the intended location
+        // await fs.rename(tmp_path, target_path);
+        // await fs.unlink(tmp_path);
+        let ipfsHash = await ipfs.add(req.file.buffer);
         let hash = ipfsHash[0].hash;
         user.proof = hash;
       }
+
       user.proof = user.proof || "none";
       const fundingAddress = transfer.createAddress();
       user.address = fundingAddress.address;
@@ -198,9 +210,10 @@ class userProcessor {
    * @param{Object} userId - user id to be updated
    * @return{json} the registered user's detail
    */
-     static async getFundingAccount(fundingAddress) {
+     static async getFundingAccount(fundingId) {
       try {
-        const funding = await charity.getFundingAccount(fundingAddress);
+        // const funding = await charity.getFundingAccount(fundingAddress);
+        const funding = await Funding.findOne({_id: fundingId})
         return {
           funding
         };
@@ -211,6 +224,62 @@ class userProcessor {
       }
     }
 
+  /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+   static async getFundingAccounts() {
+    try {
+      const funding = await Funding.find({});
+      return {
+        funding
+      };
+    } catch (error) {
+      // throw custom 500 error
+      console.log(error);
+      const err = { error: 'an error occured while trying to fetch the funding account' };
+      throw err;
+    }
+  }
+
+    /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+     static async getVotes(_id) {
+      try {
+        const funding = await Funding.findOne({_id});
+        return {
+          votes: funding.votes
+        };
+      } catch (error) {
+        // throw custom 500 error
+        console.log(error);
+        const err = { error: 'an error occured while trying to fetch the votes' };
+        throw err;
+      }
+    }
+    /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} userId - user id to be updated
+   * @return{json} the registered user's detail
+   */
+     static async getUserVotes(address) {
+      try {
+        console.log(address);
+        const userVotes = await bscFunctions.getTransactions(address, voteContractAddress);
+        return {
+          votes: userVotes
+        };
+      } catch (error) {
+        // throw custom 500 error
+        console.log(error);
+        const err = { error: 'an error occured while trying to fetch the votes' };
+        throw err;
+      }
+    }
     /**
    * @description - Creates a new user in the app and assigns a token to them
    * @param{Object} userId - user id to be updated
@@ -256,22 +325,30 @@ class userProcessor {
    * @param{Object} userId - user id to be updated
    * @return{json} the registered user's detail
    */
-     static async voteAccount(voteAddress, fundingAddress, amount) {
+     static async voteAccount(voteAddress, fundingAddress, amount, user_id) {
       try {
         // const query = { _id: userId };
-        const vote = await transfer.vote(address, value);
-        const updateVote = await transfer.updateVoteAllowed(address, amount);
-        const voteAccount = await charity.voteAccount(fundingAddress, amount, updateVote);
-        if(voteAccount.vote_count >= 200) {
-          const activated = await charity.activateAccount(fundingAddress);
-        }
+        const query = { address: voteAddress };
+        const user = await User.findOne(query);
+        const vote = await transfer.vote(user, amount);
+        console.log("vote",vote)
+        const updateVote = await transfer.updateVoteAllowed(voteAddress, amount);
+        const updateUser = await User.findOneAndUpdate({_id: user_id}, { $inc: { vote_casted: amount }});
+        const voteAccount = await charity.voteAccount(fundingAddress, amount, vote);
+        const updateFunding = await Funding.findOneAndUpdate({address: fundingAddress}, {$inc: { vote_count: amount }, $push: { votes: vote }});
         const funding = await charity.getFundingAccount(voteAddress, amount);
+        if(funding.vote_count >= 200) {
+          const activated = await charity.activateAccount(fundingAddress);
+          const activateFunding = await Funding.findOneAndUpdate({address: fundingAddress}, {$set: {is_activated: true}})
+        }
+        // const funding = await charity.getFundingAccount(voteAddress, amount);
         return {
-          funding
+          message: "Voting successful"
         };
       } catch (error) {
         // throw custom 500 error
-        const err = { error: 'an error occured while trying to fetch the funding account' };
+        console.log(error);
+        const err = { error: 'an error occured while trying to fund account' };
         throw err;
       }
     }

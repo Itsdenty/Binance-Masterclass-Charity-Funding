@@ -55,7 +55,7 @@ const createFundingAccount = ({ fundAddress, target_amount, description, proof})
 
 const getFundingAccount = (fundAddress) => {
     return new Promise((resolve, reject) => {
-        contract.methods.setCharityAccount(fundAddress).send({
+        contract.methods.getCharityAccount(fundAddress).send({
             from: senderAccount,
             gas: 1000000,         // Gas sent with each transaction 
             gasPrice: 20000000000,  // 20 gwei (in wei) 
@@ -72,9 +72,14 @@ const getFundingAccount = (fundAddress) => {
 const voteAccount = (fundAddress, voteValue, voteHash, is_activated) => {
     return new Promise((resolve, reject) => {
         // address fundAddress, uint voteValue, string memory voteHash, bool is_activated
-        contract.methods.voteAccount(fundAddress, voteValue, voteHash, is_activated).call().then(function(result) {
+        contract.methods.voteAccount(fundAddress, voteValue, voteHash, is_activated).send({
+            from: senderAccount,
+            gas: 1000000,         // Gas sent with each transaction 
+            gasPrice: 20000000000,
+        }).then(function(result) {
             resolve(result);
         }).catch(function(e){
+            console.log("vote new error", error);
             reject(e);
         })
     });
@@ -83,7 +88,11 @@ const voteAccount = (fundAddress, voteValue, voteHash, is_activated) => {
 const closeAccount = (fundAddress) => {
     return new Promise((resolve, reject) => {
         // address fundAddress, uint voteValue, string memory voteHash, bool is_activated
-        contract.methods.closeAccount(fundAddress).call().then(function(result) {
+        contract.methods.closeAccount(fundAddress).send({
+            from: senderAccount,
+            gas: 1000000,         // Gas sent with each transaction 
+            gasPrice: 20000000000,
+        }).then(function(result) {
             resolve(result);
         }).catch(function(e){
             reject(e);
@@ -94,7 +103,11 @@ const closeAccount = (fundAddress) => {
 const activateAccount = (fundAddress) => {
     return new Promise((resolve, reject) => {
         // address fundAddress, uint voteValue, string memory voteHash, bool is_activated
-        contract.methods.activateAccount(fundAddress).call().then(function(result) {
+        contract.methods.activateAccount(fundAddress).send({
+            from: senderAccount,
+            gas: 1000000,         // Gas sent with each transaction 
+            gasPrice: 20000000000,
+        }).then(function(result) {
             resolve(result);
         })
         .catch(function(e){

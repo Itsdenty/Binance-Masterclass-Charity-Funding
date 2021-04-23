@@ -7,9 +7,9 @@ const funding = (mongoose, connection) => {
       description: { type: String },
       target_amount: { type: Number, required: true },
       pk: { type: String, required: true },
-      raised_amount: { type: Number, default: false },
-      votes: { type: Number },
-      is_activated: {type: Boolean},
+      raised_amount: { type: Number },
+      votes: [{ type: String }],
+      is_activated: {type: Boolean, default: false},
       vote_count: {type: Number, default: 0}
     },
 

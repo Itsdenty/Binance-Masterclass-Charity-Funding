@@ -104,7 +104,7 @@ contract VotingCharityToken {
         balances[_from] -= _value;
         balances[_to] += _value;
         allowed[_from][msg.sender] -= _value;
-        votes[_from].vote_casted += _value; 1
+        votes[_from].vote_casted += _value;
         emit Transfer(_from, _to, _value);
         return true;
     }

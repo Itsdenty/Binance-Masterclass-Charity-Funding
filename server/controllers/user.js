@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import fs from 'fs';
 import transformer from '../utils/transformer';
 import processor from '../processors/user'; // for user database interaction
 
@@ -42,9 +42,17 @@ class userController {
    static async createFundingAccount(req, res) {
     try {
       req.body.user_id = req.decodedToken._id;
-      const createFunding = await processor.createFundingAccount(req.body, req.files);
+      console.log(req.file);
+      // var tmp_path = req.file.path;
+      // // set where the file should actually exists - in this case it is in the "images" directory
+      // var target_path = 'server/public/uploads/' + req.file.originalname;
+      // // move the file from the temporary location to the intended location
+      // await fs.rename(tmp_path, target_path);
+      // await fs.unlink(tmp_path);
+      const createFunding = await processor.createFundingAccount(req);
       res.send(transformer.transformResponse(200, createFunding));
     } catch (error) {
+      console.log(error);
       res.status(500).json(transformer.transformResponse(500, error.error));
     }
   }
@@ -53,7 +61,7 @@ class userController {
     const voteAddress = req.decodedToken.address;
     const amount = req.params.amount;
     try {
-      const voteAccount = await processor.voteAccount(voteAddress, accountAddress, amount);
+      const voteAccount = await processor.voteAccount(voteAddress, accountAddress, amount, req.decodedToken._id);
       res.send(transformer.transformResponse(200, voteAccount));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));
@@ -71,8 +79,62 @@ class userController {
    */
    static async getFundingAccount(req, res) {
     try {
-      const getFunding = await processor.getFundingAccount(req.params.address);
+      const getFunding = await processor.getFundingAccount(req.params.id);
       res.send(transformer.transformResponse(200, getFunding));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {*} user
+   */
+   static async getVotes(req, res) {
+    try {
+      const getVotes = await processor.getVotes(req.params.id);
+      res.send(transformer.transformResponse(200, getVotes));
+    } catch (error) {
+      res.status(500).json(transformer.transformResponse(500, error.error));
+    }
+  }
+
+    /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {*} user
+   */
+     static async getUserVotes(req, res) {
+      try {
+        const getVotes = await processor.getUserVotes(req.decodedToken.address);
+        res.send(transformer.transformResponse(200, getVotes));
+      } catch (error) {
+        console.log(error);
+        res.status(500).json(transformer.transformResponse(500, error.error));
+      }
+    }
+  /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {*} user
+   */
+   static async getFundingAccounts(req, res) {
+    try {
+      const getFundings = await processor.getFundingAccounts();
+      res.send(transformer.transformResponse(200, getFundings));
     } catch (error) {
       res.status(500).json(transformer.transformResponse(500, error.error));
     }
