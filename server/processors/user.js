@@ -422,6 +422,34 @@ class userProcessor {
       }
     }
 
+   /**
+   * @description - Creates a new user in the app and assigns a token to them
+   * @param{Object} user - api request
+   * @param{Object} res - route response
+   * @return{json} the registered user's detail
+   */
+    static async fundAccount(data, usr) {
+      try {
+        console.log("data", data);
+        const query = { email: usr.email };
+        const user = await User.findOne(query);
+        // console.log(user);
+        const {pk, address} = user;
+          // const withdrawBNB = await charity.withdrawBNB(user, data.address, data.amount);
+          const sendCharity = await charity.transferFrom(user, data.address, data.amount);
+        // const createFunding = await charity.createFundingAccount(user);
+        // const setup = await transfer.setupVotes(user);
+        return {
+          message: 'account funded successfully.',
+        };
+      } catch (error) {
+        // throw custom 500 error
+        console.log(error);
+        const err = { error: 'an error occured while trying to swap your tokens' };
+        throw err;
+      }
+    }
+
   /**
    * @description - Creates a new user in the app and assigns a token to them
    * @param{Object} params - user query object

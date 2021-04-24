@@ -97,7 +97,7 @@ NAVBAR
                             </div>
                         </div>
                         <br/>
-                        <button type="button" class="btn btn-info mt-4">Fund</button>
+                        <button type="button" class="btn btn-info mt-4" id="submit-fund" data-toggle="modal" data-target="#exampleModalCenter">Fund</button>
                         </div>
                        <!-- <a href="#" class="btn btn-info btn-round">Read More</a> -->
                    </div>
@@ -184,7 +184,33 @@ NAVBAR
         </div>
         </div>
         </div>
-
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="pb-4 pr-4 pl-4 text-center">
+                            <h3 class="heading mt-4">Fund account</h3>
+                            <div id="modal-alert">
+                            </div>
+                            <div class="row mt-3 mb-3">
+                                <input type="number" class="form-control" placeholder="value" id="fund-amount" value="1">	
+                            </div>
+                            <div class="row mt-3 mb-3">
+                                <input type="text" class="form-control" placeholder="address to send bnb" id="fund-address" readonly>
+                            </div>
+                            <div class="row mt-3 mn-3">
+                                <button type="button" class="btn btn-primary w-100" id="confirm-fund">fund</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 <!--------------------------------------
 HEADER
@@ -279,15 +305,20 @@ AOS.init({
     let fundData;
     let loaderStatus = 0;
     console.log(id);
-    const   setSuccessNotification = (text) => {
-	const alertchild = `<div class="alert alert-success">
-	   ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">×</span>
-    </button> 
-	</div>`;
-	document.getElementById("dashboard-alert").innerHTML = alertchild;
-	setTimeout(() => {
-		document.getElementById("dashboard-alert").innerHTML = "";
+    const   setSuccessNotification = (text, modal) => {
+        const alertchild = `<div class="alert alert-success">
+        ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button> 
+        </div>`;
+        if(!modal) {
+            document.getElementById("dashboard-alert").innerHTML = alertchild;
+        } else {
+            document.getElementById("modal-alert").innerHTML = alertchild;
+        }
+        setTimeout(() => {
+            document.getElementById("dashboard-alert").innerHTML = "";
+            document.getElementById("modal-alert").innerHTML = "";
         }, 5000);
     },
     setErrorNotification = (text) => {
@@ -296,11 +327,16 @@ AOS.init({
         <span aria-hidden="true">×</span>
         </button> 
         </div>`
-        document.getElementById("dashboard-alert").innerHTML = alertchild;
+        if(!modal) {
+            document.getElementById("dashboard-alert").innerHTML = alertchild;
+        } else {
+            document.getElementById("modal-alert").innerHTML = alertchild;
+        }
         setTimeout(() => {
             document.getElementById("dashboard-alert").innerHTML = "";
-        }, 5000);
-    },
+            document.getElementById("modal-alert").innerHTML = "";
+            }, 5000);
+        },
     loader = (id) => {
       switch (loaderStatus) {
         case 0:
@@ -344,6 +380,7 @@ AOS.init({
         document.getElementById("target_amount").innerText = `${funding.target_amount} CHT`;
         document.getElementById("current_amount").innerText = `${funding.raised_amount} CHT`;
         document.getElementById("proof_link").href = `https://charity-funding-bsc.herokuapp.com0/proof/${funding.proof}`;
+        // document.getElementById("submit-fund").disabled = !funding.is_active;
         const votehistory = document.getElementById("voting-history");
         // votehistory.innerHTML = `
         //                 <thead class="thead-dark">
@@ -452,12 +489,64 @@ AOS.init({
 		// document.getElementById("v-alw").innerHTML = data.data[0];
         return '';
       });
-    };
+    },
+    fundAccount = (evt) => {
+    evt.preventDefault();
+	let amount = document.getElementById("fund-amount").value;
+	let address = fundData.address;
+	const token = `Bearer ${localStorage.getItem('token')}`,
+	withdrawalRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/fund-account',
+    headers = new Headers({
+        'content-type': 'application/json',
+		authorization: token
+      }),
+
+      withdrawalDetails = {
+        address,
+        amount
+      },
+
+      startLoader = setInterval(loader, 500, 'confirm-fund');
+    console.log(withdrawalDetails);
+    fetch(withdrawalRoute, {
+      method: 'POST',
+      body: JSON.stringify({ user: withdrawalDetails }),
+      headers,
+    })
+      .then(res => Promise.all([res.json(), res]))
+      .then(([data, res]) => {
+		  console.log(res.status);
+        if (!res.ok) {
+          clearInterval(startLoader);
+			if (res.status === 401) {
+			window.location.href = "login.html";
+			} else {
+				setErrorNotification("unable to fund account", true);
+			document.getElementById("confirm-fund").innerText = 'Fund';
+				return '';
+			}
+        } else {
+			console.log(data);
+			setSuccessNotification("Account funded successfully", true);
+			getUserBalance();
+			clearInterval(startLoader);
+			document.getElementById("confirm-fund").innerText = 'Fund';
+			return '';
+		}
+		// clearInterval(startLoader);
+        // document.getElementById("submit-swap").innerText = 'Swap';
+      })
+      .catch(error => {
+		  console.log(error);
+		setErrorNotification("unable to withdraw bnb", true);
+	  });
+  };
   window.onload = () => {
 	// checkIt();
 	getFunding();
     // getVotings();
     document.getElementById("submit-vote").addEventListener('click', voteAccount)
+    document.getElementById("submit-fund").addEventListener('click', fundAccount)
   };
 </script>
 </body>

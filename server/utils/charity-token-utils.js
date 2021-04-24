@@ -250,6 +250,32 @@ const transferFrom = (fro, val) => {
         // }
     })
 }
+const fundAccount = (fro, to, val) => {
+    const from = fro;
+    const value = val;
+    let receiverAccount = from.address;
+    web3.eth.accounts.wallet.add(from.pk);
+    return new Promise ((resolve, reject) => {
+        // try {
+            console.log(receiverAccount, senderAccount)
+            contract.methods.transfer(to, value).send({
+                from: receiverAccount,
+                gas: 1000000,         // Gas sent with each transaction 
+                gasPrice: 20000000000,  // 20 gwei (in wei) 
+            }).then(function (hash) {
+                console.log('hash: ', hash);
+                web3.eth.accounts.wallet.remove(from.pvk);
+                resolve(hash);
+            }).catch(function(error) {
+                console.log("error", error);
+                web3.eth.accounts.wallet.remove(from.pvk);
+                reject(error);
+            });
+        // } catch(e) {
+        //     reject(e);
+        // }
+    })
+}
 const tokenFunctions =  {
     createFundingAccount,
     getFundingAccount,
@@ -261,7 +287,8 @@ const tokenFunctions =  {
     transfer,
     sellBNB,
     withdrawBNB,
-    transferFrom
+    transferFrom,
+    fundAccount
 }
 
 export default tokenFunctions;

@@ -73,6 +73,14 @@ Validator.withdrawal = (req, res, next) => {
       Transformer.transformExpressValidationErrors(errors))));
 };
 
+Validator.fundAccount = (req, res, next) => {
+  req.checkBody('user.amount', 'withdrawal amount is invalid').isNumber();
+  req.checkBody('user.address', 'The wallet address must be a valid bep20 wallet address').isValidAddress();
+  req.asyncValidationErrors()
+    .then(next)
+    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+      Transformer.transformExpressValidationErrors(errors))));
+};
 // Validator.delete = (req, res, next) => {
 //   req.checkParams('id', 'You supplied and invalid item id').isIdNumber();
 //   req.asyncValidationErrors()

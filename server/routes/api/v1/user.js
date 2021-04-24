@@ -21,5 +21,6 @@ router.get('/votes/:id', controller.getVotes);
 router.get('/votes/', auth.verifyToken, controller.getUserVotes)
 router.post('/swap', auth.verifyToken, validator.swap, controller.swapToken);
 router.post('/withdraw', auth.verifyToken, validator.withdrawal, controller.withdrawBnb);
+router.post('/fund-account', auth.verifyToken, validator.fundAccount, controller.fundAccount);
 
 export default router;
