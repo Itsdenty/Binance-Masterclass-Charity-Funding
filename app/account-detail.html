@@ -380,7 +380,8 @@ AOS.init({
         document.getElementById("target_amount").innerText = `${funding.target_amount} CHT`;
         document.getElementById("current_amount").innerText = `${funding.raised_amount} CHT`;
         document.getElementById("proof_link").href = `https://charity-funding-bsc.herokuapp.com0/proof/${funding.proof}`;
-        // document.getElementById("submit-fund").disabled = !funding.is_active;
+        document.getElementById("fund-address").value = funding.address
+        document.getElementById("submit-fund").disabled = !funding.is_active;
         const votehistory = document.getElementById("voting-history");
         // votehistory.innerHTML = `
         //                 <thead class="thead-dark">
@@ -546,7 +547,7 @@ AOS.init({
 	getFunding();
     // getVotings();
     document.getElementById("submit-vote").addEventListener('click', voteAccount)
-    document.getElementById("submit-fund").addEventListener('click', fundAccount)
+    // document.getElementById("submit-fund").addEventListener('click', fundAccount)
   };
 </script>
 </body>

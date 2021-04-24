@@ -80,7 +80,7 @@ The Voting token contract is available [ here ](https://testnet.bscscan.com/addr
 * User can check his vote history
 * User can create fund account
 * User can vote a fund account for activation
-* User can donate for a token account
+* User can donate to a token account
 
 ## Available APIs
 <table>
@@ -123,6 +123,16 @@ The Voting token contract is available [ here ](https://testnet.bscscan.com/addr
       <td>Post</td>
       <td>/api/v1/swap</td>
       <td>To swap user tokens</td>
+  </tr>
+  <tr>
+      <td>Post</td>
+      <td>/api/v1/withdraw</td>
+      <td>To withdraw bnb from wallet</td>
+  </tr>
+  <tr>
+      <td>Post</td>
+      <td>/api/v1/fund-account</td>
+      <td>To fund a donation address after activation</td>
   </tr>
   <tr>
       <td>Get</td>
