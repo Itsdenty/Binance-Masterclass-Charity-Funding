@@ -168,13 +168,13 @@ NAVBAR
 
                     <!-- pagination -->
                     <nav aria-label="Page navigation example" class="mt-4">
-                        <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-left"></i></a></li>
+                        <ul class="pagination" id="history-pagination">
+                            <!-- <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-left"></i></a></li>
                             <li class="page-item"><a class="page-link" href="#">1</a></li>
                             <li class="page-item active"><a class="page-link" href="#">2</a></li>
                             <li class="page-item"><a class="page-link" href="#">3</a></li>
                             <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>
+                            <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li> -->
                         </ul>
                     </nav>
                     <!-- <a href="#" class="btn btn-info btn-round">Read More</a> -->
@@ -277,6 +277,7 @@ AOS.init({
     let params = (new URL(document.location)).searchParams;
     let id = params.get("id");
     let fundData;
+    let loaderStatus = 0;
     console.log(id);
     const   setSuccessNotification = (text) => {
 	const alertchild = `<div class="alert alert-success">
@@ -299,6 +300,29 @@ AOS.init({
         setTimeout(() => {
             document.getElementById("dashboard-alert").innerHTML = "";
         }, 5000);
+    },
+    loader = (id) => {
+      switch (loaderStatus) {
+        case 0:
+            document.getElementById(id).innerText = 'loading.';
+            loaderStatus = 1;
+            break;
+        case 1:
+            document.getElementById(id).innerText = 'loading..';
+            loaderStatus = 2;
+            break;
+        case 2:
+            document.getElementById(id).innerText = 'loading...';
+            loaderStatus = 3;
+            break;
+        case 3:
+            document.getElementById(id).innerText = 'loading....';
+            loaderStatus = 0;
+            break;
+        default:
+            document.getElementById(id).innerText = 'loading.....';
+            loaderStatus = 0;
+      }
     },
     getFunding = () => {
 	  getFundsRoute = `https://charity-funding-bsc.herokuapp.com/api/v1/user/funding/${id}`;
@@ -330,15 +354,43 @@ AOS.init({
         //                         <th scope="col"> Action	</th>
         //                     </tr>
         //                 </thead>`;
-        funding.votes.forEach((element, index) => {
+        let votes = funding.votes;
+        let vote_count = votes.length;
+        let page = 1;
+        let offset = 5;
+        let total_pages = vote_count / offset;
+        index = 1;
+        for (i=vote_count-1; i>=vote_count-offset; i--) {
             votehistory.innerHTML += `
             <tr>
-                <th scope="row"> ${++index}	</th>
-                <td>${element.substr(0,10)}...</td>
-                <td> <a href="https://testnet.bscscan.com/tx/${element}" target="_blank"><button type="button" class="btn btn-info">Detail</button></a> </td>
-            </tr>    
-            `;
-        })
+                    <th scope="row"> ${index++}	</th>
+                    <td>${votes[i].substr(0,10)}...</td>
+                    <td> <a href="https://testnet.bscscan.com/tx/${votes[i]}" target="_blank"><button type="button" class="btn btn-info">Detail</button></a> </td>
+                </tr> `;
+        }
+        let pagination = document.getElementById("history-pagination");
+        for(i=0; i<total_pages; i++) {
+            if(i == 0) {
+                pagination.innerHTML += `
+                <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-left"></i></a></li>
+                `;
+            } 
+            pagination.innerHTML += `
+                    <li class="page-item"><a class="page-link" href="#">${i+1}</a></li>`;
+            if (i == total_pages -1) {
+                pagination.innerHTML += `
+                    <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>`;
+            }
+        }
+        // funding.votes.forEach((element, index) => {
+        //     votehistory.innerHTML += `
+        //     <tr>
+        //         <th scope="row"> ${++index}	</th>
+        //         <td>${element.substr(0,10)}...</td>
+        //         <td> <a href="https://testnet.bscscan.com/tx/${element}" target="_blank"><button type="button" class="btn btn-info">Detail</button></a> </td>
+        //     </tr>    
+        //     `;
+        // })
         // fundingList.innerHTML = "";
 		// document.getElementById("v-alw").innerHTML = data.data[0];
         return '';
@@ -356,6 +408,7 @@ AOS.init({
         window.location.href = "login.html";
     }
     if(amount > 0 && amount <= 10) {
+      startLoader = setInterval(loader, 500, 'submit-vote');
       fetch(voteAccountRoute, {
         headers,
         })
@@ -368,11 +421,15 @@ AOS.init({
             console.log(data.data.funding);
             const vote_status = data.data.message;
             setSuccessNotification(vote_status || "vote casted successfully");
+            clearInterval(startLoader);
+			document.getElementById("submit-vote").innerText = 'Vote';
             return '';
         }
       });
     } else {
-        setErrorNotification("invalid vote casted")
+        setErrorNotification("invalid vote casted");
+        clearInterval(startLoader);
+		document.getElementById("submit-vote").innerText = 'Vote';
     }
   },
     getVotings = () => {

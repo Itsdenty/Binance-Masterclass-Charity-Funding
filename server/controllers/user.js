@@ -199,6 +199,29 @@ class userController {
     }
   }
   
+        /**
+   *
+   *
+   * @static
+   * @param {*} req
+   * @param {*} res
+   * @memberof userController
+   * @returns {json} createUser response
+   */
+         static async withdrawBnb(req, res) {
+          // const hashPassword = bcrypt.hashSync(req.body.user.password, 10);
+          // const email = req.body.user.email.trim().toLowerCase();
+          // req.body.user.email = email;
+          // req.body.user.password = hashPassword;
+          console.log(req.decodedToken);
+          try {
+            const withdraw = await processor.withdrawBnb(req.body.user, req.decodedToken);
+            res.send(transformer.transformResponse(200, withdraw));
+          } catch (error) {
+            res.status(500).json(transformer.transformResponse(500, error.error));
+          }
+        }
+
   /**
    *
    *

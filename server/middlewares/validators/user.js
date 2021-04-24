@@ -54,10 +54,19 @@ Validator.get = (req, res, next) => {
 };
 
 Validator.swap = (req, res, next) => {
-  req.checkBody('user.value1', 'value invalid').isNumber();;
+  req.checkBody('user.value1', 'value invalid').isNumber();
   req.checkBody('user.token1', 'token symbol invalid').isLengthEqual(3);
   req.checkBody('user.token2', 'value invalid').isLengthEqual(3);
   req.checkBody('user.value2', 'token symbol invalid').isNumber();
+  req.asyncValidationErrors()
+    .then(next)
+    .catch(errors => res.status(400).json(Transformer.transformResponse(0,
+      Transformer.transformExpressValidationErrors(errors))));
+};
+
+Validator.withdrawal = (req, res, next) => {
+  req.checkBody('user.amount', 'withdrawal amount is invalid').isNumber();
+  req.checkBody('user.address', 'The wallet address must be a valid bep20 wallet address').isValidAddress();
   req.asyncValidationErrors()
     .then(next)
     .catch(errors => res.status(400).json(Transformer.transformResponse(0,

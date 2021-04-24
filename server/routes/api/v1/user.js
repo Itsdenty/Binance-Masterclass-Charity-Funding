@@ -20,4 +20,6 @@ router.get('/vote', auth.verifyToken, controller.getVoteProfile);
 router.get('/votes/:id', controller.getVotes);
 router.get('/votes/', auth.verifyToken, controller.getUserVotes)
 router.post('/swap', auth.verifyToken, validator.swap, controller.swapToken);
+router.post('/withdraw', auth.verifyToken, validator.withdrawal, controller.withdrawBnb);
+
 export default router;

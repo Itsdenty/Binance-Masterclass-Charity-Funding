@@ -66,67 +66,11 @@ NAVBAR
 <!-- End Navbar -->
     
     <div class="container">
+        <div class="row">
+            <div id="dashboard-alert" style="z-index: 2000;">
+            </div>
+        </div>
         <div class="card-deck card-pricing text-center pt-5" id="funding-list">
-            <!-- <div class="row mt-5"> -->
-            <!-- <div class="card border-0 shadow-sm  mt-5">
-                <div class="card-body">
-                    <h3>Account detail</h3>
-                    <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian... <br/><a href="#">Read more</a></p>
-                    <a href="test.html">account file</a>
-                    <div class="row mt-4">
-                        <div class="col-1">
-                        </div>
-                        <div class="col-5">
-                            <input type="number" class="form-control" placeholder="Vote count">
-                        </div>
-                        <div class="col-5">
-                            <button type="submit" class="btn btn-primary btn-round">Vote</button>
-                        </div>
-                    </div>
-                    <br/>
-                    <button type="button" class="btn btn-info mt-4">Fund</button>
-                </div>
-            </div> -->
-            <!-- <div class="card shadow-sm border-0  mt-5">
-                <div class="card-body">
-                    <h3>Account detail</h3>
-                    <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian... <br/> <a href="#">Read more</a></p>
-                    <a href="test.html">account file</a>
-                    <div class="row mt-4">
-                        <div class="col-1">
-                        </div>
-                        <div class="col-5">
-                            <input type="number" class="form-control" placeholder="Vote count">
-                        </div>
-                        <div class="col-5">
-                            <button type="submit" class="btn btn-primary btn-round">Vote</button>
-                        </div>
-                    </div>
-                    <br/>
-                    <button type="button" class="btn btn-info mt-4">Fund</button>
-                </div>
-            </div> -->
-            <!-- <div class="card border-0 shadow-sm  mt-5">
-                <div class="card-body">
-                    <h3>Account detail</h3>
-                    <p>We are a small ngo seeking to feed 100 hungry kids in haiti. with $200 an equivalent of 400 charity tokens we will be able to achieve this fit. We've attached a zip file of documents of how we plan to feed these kids to this account. Kindly support us on this humanitarian... <br/> <a href="#">Read more</a></p>
-                    <a href="test.html">account file</a>
-                    <div class="row mt-4">
-                        <div class="col-1">
-                        </div>
-                        <div class="col-5">
-                            <input type="number" class="form-control" placeholder="Vote count">
-                        </div>
-                        <div class="col-5">
-                            <button type="submit" class="btn btn-primary btn-round">Vote</button>
-                        </div>
-                    </div>
-                    <br/>
-                    <button type="button" class="btn btn-info mt-4">Fund</button>
-                </div>
-            </div> -->
-            <!-- </div> -->
-
         </div>
         <!-- pagination -->
     <nav aria-label="Page navigation example" class="mt-4">
@@ -224,7 +168,53 @@ AOS.init({
 
 </script>
 <script>
-    const getFundings = () => {
+    let loaderStatus = 0;
+    const setSuccessNotification = (text) => {
+        const alertchild = `<div class="alert alert-success">
+        ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button> 
+        </div>`;
+        document.getElementById("dashboard-alert").innerHTML = alertchild;
+        setTimeout(() => {
+            document.getElementById("dashboard-alert").innerHTML = "";
+        }, 5000);
+    },
+    setErrorNotification = (text) => {
+        const alertchild = `<div class="alert alert-danger">
+        ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button> 
+        </div>`
+        document.getElementById("dashboard-alert").innerHTML = alertchild;
+        setTimeout(() => {
+            document.getElementById("dashboard-alert").innerHTML = "";
+        }, 5000);
+    },
+    loader = (id) => {
+      switch (loaderStatus) {
+        case 0:
+            document.getElementById(id).innerText = 'wait.';
+            loaderStatus = 1;
+            break;
+        case 1:
+            document.getElementById(id).innerText = 'wait..';
+            loaderStatus = 2;
+            break;
+        case 2:
+            document.getElementById(id).innerText = 'wait...';
+            loaderStatus = 3;
+            break;
+        case 3:
+            document.getElementById(id).innerText = 'wait....';
+            loaderStatus = 0;
+            break;
+        default:
+            document.getElementById(id).innerText = 'wait.....';
+            loaderStatus = 0;
+      }
+    },
+    getFundings = () => {
 	  getFundsRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/funding';
     fetch(getFundsRoute, {
       headers: {
@@ -247,21 +237,65 @@ AOS.init({
                         <div class="col-1">
                         </div>
                         <div class="col-5">
-                            <input type="number" class="form-control" placeholder="Vote count">
+                            <input type="number" class="form-control" placeholder="Vote count" id="vc-${element.address}">
                         </div>
                         <div class="col-5">
-                            <button type="submit" class="btn btn-primary btn-round">Vote</button>
+                            <button type="submit" class="btn btn-primary btn-round vote" data-address="${element.address}" id="vb-${element.address}">Vote</button>
                         </div>
                     </div>
                     <br/>
-                    <button type="button" class="btn btn-info mt-4">Fund</button>
+                    <button type="button" class="btn btn-info mt-4" disabled=${!element.isactivated}>Fund</button>
                 </div>
             </div>
             `
         });
+        const accountVotes = document.getElementsByClassName('vote');
+        Array.from(accountVotes).forEach((element) => {
+            element.addEventListener('click', voteAccount);
+        });
 		// document.getElementById("v-alw").innerHTML = data.data[0];
         return '';
       });
+  },
+  voteAccount = (e) => {
+    const address = e.target.getAttribute("data-address");
+    console.log(address);
+    // setErrorNotification("invalid vote casted");
+    startLoader = setInterval(loader, 500, `vb-${address}`);
+    const token = `Bearer ${localStorage.getItem('token')}`,
+    headers = new Headers({
+        'content-type': 'application/json',
+		authorization: token
+      }),
+    amount = document.getElementById(`vc-${address}`).value,
+	voteAccountRoute = `https://charity-funding-bsc.herokuapp.com/api/v1/user/vote/${address}/${amount}`;
+    if(!token) {
+        window.location.href = "login.html";
+    }
+    if(amount > 0 && amount <= 10) {
+      fetch(voteAccountRoute, {
+        headers,
+        })
+      .then(res => res.json())
+      .then((data, res) => {
+          console.log(data.status);
+        if (data.status == 0) {
+			window.location.href = "login.html";
+		} else {
+            console.log(data.data.funding);
+            const vote_status = data.data.message;
+            setSuccessNotification(vote_status || "vote casted successfully");
+            clearInterval(startLoader);
+            document.getElementById(`vb-${address}`).innerText = 'Vote';
+            return '';
+        }
+      });
+    } else {
+        setErrorNotification("invalid vote casted");
+        clearInterval(startLoader);
+        document.getElementById(`vb-${address}`).innerText = 'Vote';
+        return;
+    }
   };
   window.onload = () => {
 	// checkIt();

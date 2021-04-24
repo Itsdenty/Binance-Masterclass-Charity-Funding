@@ -89,14 +89,6 @@ NAVBAR
 						</select>
 					</div>
 				</div>
-				<!-- <div class="form-group">
-    				<input type="amount" placeholder="20 VCT">
-					<select>
-						<option>CHT</option>
-						<option>VCT</option>
-						<option>BNB</option>
-					</select>
-				</div> -->
 				<div class="row mt-4">
 					<div class="col-7">
 						<input type="number" class="form-control" placeholder="value" id="value2" value="1000" readonly>
@@ -104,9 +96,6 @@ NAVBAR
 					<div class="col-5">
 						<select class="form-control" id="token2">
 							<option value="CHT" selected>CHT</option>
-							<!-- <option value="CHT" selcted>CHT</option>
-							<option value="VCT">VCT</option>
-							<option value="BNB">BNB</option> -->
 						</select>
 					</div>
 				</div>
@@ -124,57 +113,33 @@ NAVBAR
 						<!-- token balance -->
 		<div class="col-lg-6  mt-2">
 			<div class="card shadow-sm border-0">
-    			<div class="card-body pt-4 pb-4">
+    			<div class="card-body pt-4">
         			<h5 class="card-title pt-1">Wallet Token balance</h5>
 					<p class="card-text text-muted"></p><b>Charity token balance:</b> <span id="cht-balance"></span></p>
 					<p class="card-text text-muted"></p><b>Vote token balance:</b> <span id="vct-balance"></span></p>
-					<p class="card-text text-muted"></p><b>BNB balance:</b> <span id="bnb-balance"></span></p>
-        		<!-- <p class="card-text text-muted">
-             		200 VCT
-        		</p>
-    			</div>
-				<div class="card-body pt-1 pb-1">
-        			<h5 class="card-title">Charity token balance</h5>
-        		<p class="card-text text-muted">
-             		200 CHT
-        		</p>
-    			</div>
-				<div class="card-body pt-1 pb-2">
-        			<h5 class="card-title">BNB balance</h5>
-        		<p class="card-text text-muted">
-             		20 BNB
-        		</p> -->
+					<div class="row">
+						<div class="col-lg-7" >
+							<p class="card-text text-muted"></p><b>BNB balance:</b> <span id="bnb-balance"></span></p>
+						</div>
+						<div class="col-lg-5">
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">withdraw </button>
+						</div>
+					</div>
     			</div>
 			</div>
 		</div>	
         <div class="col-lg-6  mt-2">
                 <!-- <p><b>Simple Card</b></p> -->
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 pb-2">
                    <!-- <img class="card-img-top" src="./assets/img/demo/2.jpg" alt="Card image cap"> -->
                 <div class="card-body pt-5 pb-5">
                        <h5 class="card-title text-md-center">Your token profile</h5>
                        <!-- <p class="card-text text-muted">
                             Some quick example text to build on the card title and make up the bulk of the card's content.
                        </p> -->
-                       <div class="col-md-10 ml-5">
+                       <div class="col-md-10 ml-5 mb-1">
 						<p><b>Vote Allowance:</b> <span id="v-alw"></span></p>
                         <p><b>Vote casted:</b> <span id="v-cst"></span></p>
-                        <!-- <form> 
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter amount" required="">
-                            <small id="emailHelp" class="form-text text-muted">send charity token to vote contract address to buy token</small>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Charity token wallet address" required="">
-                        </div>
-                         <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div> -->
-                        <!-- <button type="submit" class="btn btn-success btn-round d-block w-100">Buy token</button>
-                        </form> -->
-                        </div>
-                       <!-- <a href="#" class="btn btn-info btn-round">Read More</a> -->
                    </div>
 				   <div>
 				</div>	 
@@ -199,27 +164,39 @@ NAVBAR
 </tr>
 </thead>
 <tbody id="vote-history">
-<!-- <tr>
-	<th scope="row"> #	</th>
-	<td> # </td>
-	<td> ## </td>
-	<td> ### </td>
-</tr>
-<div class="col-lg-6  mt-5">
-	<td> ## </td>
-	<td> ### </td>
-	<td>###</td>
-</tr>
-<tr>
-	<th scope="row"> #	</th>
-	<td> #    </td>
-	<td> ## </td>
-	<td> ### </td>
-</tr> -->
 </tbody>
 </table>
 </div>
 </div>
+<!-- button triggering modal -->
+	<!-- The modal itself -->
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header border-0">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="pb-4 pr-4 pl-4 text-center">
+						<h3 class="heading mt-4">BNB Withdrawal</h3>
+						<div id="modal-alert">
+						</div>
+						<div class="row mt-3 mb-3">
+							<input type="number" class="form-control" placeholder="value" id="withdraw-amount" value="1">	
+						</div>
+						<div class="row mt-3 mb-3">
+							<input type="text" class="form-control" placeholder="address to send bnb" id="withdraw-address">
+						</div>
+						<div class="row mt-3 mn-3">
+							<button type="button" class="btn btn-primary w-100" id="submit-withdrawal">withdraw </button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -402,26 +379,36 @@ AOS.init({
         }
       });
   },
-  setSuccessNotification = (text) => {
+  setSuccessNotification = (text, modal) => {
 	const alertchild = `<div class="alert alert-success">
 	   ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">×</span>
     </button> 
 	</div>`;
-	document.getElementById("dashboard-alert").innerHTML = alertchild;
+	if(!modal) {
+		document.getElementById("dashboard-alert").innerHTML = alertchild;
+	} else {
+		document.getElementById("modal-alert").innerHTML = alertchild;
+	}
 	setTimeout(() => {
 		document.getElementById("dashboard-alert").innerHTML = "";
+		document.getElementById("modal-alert").innerHTML = "";
 	}, 5000);
   },
-  setErrorNotification = (text) => {
+  setErrorNotification = (text, modal) => {
 	const alertchild = `<div class="alert alert-danger">
 	  ${text} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">×</span>
     </button> 
 	</div>`
-	document.getElementById("dashboard-alert").innerHTML = alertchild;
+	if(!modal) {
+		document.getElementById("dashboard-alert").innerHTML = alertchild;
+	} else {
+		document.getElementById("modal-alert").innerHTML = alertchild;
+	}
 	setTimeout(() => {
 		document.getElementById("dashboard-alert").innerHTML = "";
+		document.getElementById("modal-alert").innerHTML = "";
 	}, 5000);
   },
   setToken1 = (e) => {
@@ -466,6 +453,23 @@ AOS.init({
   },
   swapToken = (evt) => {
     evt.preventDefault();
+	value1 = document.getElementById("value1").value;
+	console.log(value1 * 1000)
+	if(token1 === "BNB" && token2 === "CHT" ) {
+		// setErrorNotification("You cannot swap BNB directly with VCT");
+		value2 = value1 * 1000;
+	}
+	else if(token1 === "CHT" && token2 === "BNB") {
+		value2 = value1/1000;
+	} else {
+		value2 = value1 * 1000;
+	}
+	console.log({
+        value1,
+        token1,
+		value2,
+		token2,
+      });
 	const token = `Bearer ${localStorage.getItem('token')}`,
 	swapRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/swap',
     headers = new Headers({
@@ -513,6 +517,57 @@ AOS.init({
       .catch(error => {
 		  console.log(error);
 		setErrorNotification("unable to swap token");
+	  });
+  },
+  withdrawBnb = (evt) => {
+    evt.preventDefault();
+	let amount = document.getElementById("withdraw-amount").value;
+	let address = document.getElementById("withdraw-address").value;
+	const token = `Bearer ${localStorage.getItem('token')}`,
+	withdrawalRoute = 'https://charity-funding-bsc.herokuapp.com/api/v1/user/withdraw',
+    headers = new Headers({
+        'content-type': 'application/json',
+		authorization: token
+      }),
+
+      withdrawalDetails = {
+        address,
+        amount
+      },
+
+      startLoader = setInterval(loader, 500, 'submit-withdrawal');
+    console.log(withdrawalDetails);
+    fetch(withdrawalRoute, {
+      method: 'POST',
+      body: JSON.stringify({ user: withdrawalDetails }),
+      headers,
+    })
+      .then(res => Promise.all([res.json(), res]))
+      .then(([data, res]) => {
+		  console.log(res.status);
+        if (!res.ok) {
+          clearInterval(startLoader);
+			if (res.status === 401) {
+			window.location.href = "login.html";
+			} else {
+				setErrorNotification("unable to withdraw bnb", true);
+			document.getElementById("submit-withdrawal").innerText = 'Withdraw';
+				return '';
+			}
+        } else {
+			console.log(data);
+			setSuccessNotification("Withdrawal successfully", true);
+			getUserBalance();
+			clearInterval(startLoader);
+			document.getElementById("submit-withdrawal").innerText = 'Withdraw';
+			return '';
+		}
+		// clearInterval(startLoader);
+        // document.getElementById("submit-swap").innerText = 'Swap';
+      })
+      .catch(error => {
+		  console.log(error);
+		setErrorNotification("unable to withdraw bnb", true);
 	  });
   },
   getUserVotes = () => {
@@ -574,6 +629,7 @@ AOS.init({
 	document.getElementById("token2").addEventListener('change', setToken2);
 	document.getElementById("value1").addEventListener('change', adjustValue1);
 	document.getElementById("submit-swap").addEventListener('click', swapToken);
+	document.getElementById("submit-withdrawal").addEventListener('click', withdrawBnb);
 	// logoutBtn.addEventListener('click', logout);
 };
 </script>
