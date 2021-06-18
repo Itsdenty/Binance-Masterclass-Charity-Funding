@@ -47,11 +47,13 @@ contract CharityToken {
         balances[msg.sender] = totalSupply_;
         owner = msg.sender;
     }
-    /// return total amount of tokens
+   
+ /// return total amount of tokens
     function totalSupply() public view returns (uint256) {
         return totalSupply_;
     }
-    /// _owner The address from which the balance will be retrieved
+   
+ /// _owner The address from which the balance will be retrieved
     /// return The balance
     function balanceOf(address _owner) public view returns (uint256) {
         return balances[_owner];
@@ -90,7 +92,8 @@ contract CharityToken {
         emit Transfer(_from, _to, _value);
         return true;
     }
-    function setCharityAccount(address charityAddress, uint256 target_amount, string memory description, string memory proof ) public returns (bool success) {
+    
+function setCharityAccount(address charityAddress, uint256 target_amount, string memory description, string memory proof ) public returns (bool success) {
         // charity_accounts[charityAddress] = CharityAccount( target_amount, votes, description, proof, raised_amount, vote_count, is_activated );
         charity_accounts[charityAddress].target_amount = target_amount;
         charity_accounts[charityAddress].description = description;
