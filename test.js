@@ -1,8 +1,3 @@
-// var api = require("bscscan-api").init("3V4TZCWHNGDSRHP9PGJGH4ZEU7VDUA4NRQ", "rinkby", 5000);
-// var balance = api.account.balance("0xb8bC5Bda67DDFeca29AB72EBaC0881A4bfE56F36");
-// balance.then(function (balanceData) {
-//   console.log(balanceData);
-// });
 const Web3 = require('web3');
 const path = require('path');
 const fs = require("fs");
